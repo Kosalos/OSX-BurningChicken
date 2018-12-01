@@ -153,7 +153,7 @@ class SaveLoadViewController: NSViewController,NSTableViewDataSource, NSTableVie
             
             if data != nil {
                 data?.getBytes(&vc.control, length:sz)
-                vc.updateImage()
+                vc.controlJustLoaded()
                 //Swift.print("Loaded (base 0): ",loadNextIndex.description)
                 return
             }
