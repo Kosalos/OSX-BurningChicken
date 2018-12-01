@@ -1,0 +1,102 @@
+Burning Chicken2
+
+Just like the Burning Ship fractal,
+this is just one step removed from the Mandelbrot set.
+
+The panel on the left holds two kinds of controls:
+buttons, and one or two dimensional widgets.
+
+Widgets:
+Mouse click on a widget to select it.
+It's legend will turn Green.
+You can also move the focus up/down with the '<' and '>' keys.
+Press the assigned Hotkey character to move the focus directly.
+
+Now on the image:
+Mouse drag to control the widget's parameters.
+You can also use the Arrow keys.
+Note: Hold down the <option> key to increase the alteration amount.
+Note: Hold down the <A> key to decrease the alteration amount.
+
+Note: certain widget rows manage a three part parameter (x,y and z).
+The first graph displays the x,y values, the second graph displays the z value.
+Hold down the <Shift> key to apply X axis movements to the Z value (second graph).
+
+Buttons:
+A button command is performed by Mouse clicking on the legend.
+
+Note: Press <1> to toggle display of the control panel.
+Note: Use can exit program by press the <esc> key.
+
+R. Reset
+   Reset the image position, zoom and params.
+
+Z. Zoom
+M. Move
+   Select the region of interest.
+
+P. Power:  Set exponent for complex squaring function in Mandelbrot algorithm.
+   <Reset> puts it back to the standard value of 2,
+   but other values produce interesting results.
+
+I. maxIter
+   Specify the number of interations the shader uses.
+
+C. Contrast
+   Adjust the RGB deviations from midpoint.
+
+S. Skip
+   Number of cycles before each pixel counts as 'visible'
+
+K. Chicken
+   Render altered code to produce the Burning Chicken fractal.
+
+F. Foam
+   Render altered code to produce the Foam fractal.
+   Companion widgets foamQ amd foamW control the effect.
+
+D. Shadow
+   Toggle whether shadowing effect is added.
+
+T. Coloring
+   Toggle color method: traditional color palette lookup,
+   or average Coloring algorithm.
+
+   Visit: https://fractalforums.org/fractal-mathematics-and-new-theories/28/triangle-inequality-average-algorithm/1368
+   User 3DickUlus posted a beautiful image with the fragment shader attached.
+   I copied the algorithm onto this app to do some experimentation.
+
+2. Stripe Density
+3. Escape Radius
+4. Multiplier    are all params to 3DickUlus' algorithm. Check out shader code..
+
+5,6,7. Color R,G,B
+   Affect the color balance.
+
+Visit: http://www.iquilezles.org/www/articles/ftrapsgeometric/ftrapsgeometric.htm
+to learn about Point and Line Orbit Traps
+
+Point Traps
+   Three Point Traps are offered.
+   Tap on the legend to toggle whether that Point Trap is active.
+   The companion "Point" widget controls the position of the Point Trap.
+
+Line Traps
+   Three Line Traps are offered.
+   Tap on the legend to toggle whether that Line Trap is active.
+   The companion "Point" widget controls the position of the Point Trap,
+   while "Slope" sets the line slope.
+
+Note: These orbit traps work great when using the traditional coloring method.
+Just move the "Point" around until you see it's effect.
+
+V. Save/Load
+   Launch the Save/Load dialog.
+
+L. LoadNext
+   Load the next saved image, round-robin style.
+
+H. Help
+   This dialog.
+
+

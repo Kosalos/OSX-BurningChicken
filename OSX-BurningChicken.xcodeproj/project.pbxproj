@@ -1,0 +1,379 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1D5157E8216F17CF00658510 /* WidgetGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D5157E7216F17CF00658510 /* WidgetGroup.swift */; };
+		1D5157EC2174518600658510 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1D5157EB2174518600658510 /* Shaders.metal */; };
+		1D5157EE217A3F2700658510 /* SaveLoadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D5157ED217A3F2700658510 /* SaveLoadViewController.swift */; };
+		1D5157F0217B92AE00658510 /* HelpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D5157EF217B92AE00658510 /* HelpViewController.swift */; };
+		1D5157F2217B938B00658510 /* help.txt in Resources */ = {isa = PBXBuildFile; fileRef = 1D5157F1217B938B00658510 /* help.txt */; };
+		1DA4458D21B0FFC3006CA1D1 /* Shaders.m in Sources */ = {isa = PBXBuildFile; fileRef = 1DA4458C21B0FFC3006CA1D1 /* Shaders.m */; };
+		1DA4458F21B10149006CA1D1 /* ColorMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DA4458E21B10149006CA1D1 /* ColorMap.swift */; };
+		1DD9895C208071FF00B209A5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DD9895B208071FF00B209A5 /* AppDelegate.swift */; };
+		1DD9895E208071FF00B209A5 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DD9895D208071FF00B209A5 /* ViewController.swift */; };
+		1DD989602080720000B209A5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1DD9895F2080720000B209A5 /* Assets.xcassets */; };
+		1DD989632080720000B209A5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1DD989612080720000B209A5 /* Main.storyboard */; };
+		1DDB7FBF20DA18110052FFDE /* MetalTextureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DDB7FBD20DA18100052FFDE /* MetalTextureView.swift */; };
+		1DDB7FC020DA18110052FFDE /* MetalTextureView.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1DDB7FBE20DA18110052FFDE /* MetalTextureView.metal */; };
+		1DDB7FCA20DB56360052FFDE /* Graphics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DDB7FC920DB56360052FFDE /* Graphics.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		1D5157E7216F17CF00658510 /* WidgetGroup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WidgetGroup.swift; sourceTree = "<group>"; };
+		1D5157EB2174518600658510 /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
+		1D5157ED217A3F2700658510 /* SaveLoadViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SaveLoadViewController.swift; sourceTree = "<group>"; };
+		1D5157EF217B92AE00658510 /* HelpViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HelpViewController.swift; sourceTree = "<group>"; };
+		1D5157F1217B938B00658510 /* help.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = help.txt; sourceTree = "<group>"; };
+		1DA4458C21B0FFC3006CA1D1 /* Shaders.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Shaders.m; sourceTree = "<group>"; };
+		1DA4458E21B10149006CA1D1 /* ColorMap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorMap.swift; sourceTree = "<group>"; };
+		1DD98958208071FF00B209A5 /* OSX-BurningChicken.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "OSX-BurningChicken.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1DD9895B208071FF00B209A5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		1DD9895D208071FF00B209A5 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		1DD9895F2080720000B209A5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		1DD989622080720000B209A5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		1DD989642080720000B209A5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1DD989652080720000B209A5 /* Entitlements.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Entitlements.entitlements; sourceTree = "<group>"; };
+		1DDB7FBD20DA18100052FFDE /* MetalTextureView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetalTextureView.swift; sourceTree = "<group>"; };
+		1DDB7FBE20DA18110052FFDE /* MetalTextureView.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = MetalTextureView.metal; sourceTree = "<group>"; };
+		1DDB7FC520DA19EA0052FFDE /* Shader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Shader.h; sourceTree = "<group>"; };
+		1DDB7FC920DB56360052FFDE /* Graphics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Graphics.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		1DD98955208071FF00B209A5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1DD9894F208071FF00B209A5 = {
+			isa = PBXGroup;
+			children = (
+				1DD9895A208071FF00B209A5 /* Source */,
+				1DD98959208071FF00B209A5 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		1DD98959208071FF00B209A5 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1DD98958208071FF00B209A5 /* OSX-BurningChicken.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		1DD9895A208071FF00B209A5 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				1DD9895D208071FF00B209A5 /* ViewController.swift */,
+				1D5157E7216F17CF00658510 /* WidgetGroup.swift */,
+				1D5157EB2174518600658510 /* Shaders.metal */,
+				1DA4458C21B0FFC3006CA1D1 /* Shaders.m */,
+				1DDB7FC520DA19EA0052FFDE /* Shader.h */,
+				1DDB7FBD20DA18100052FFDE /* MetalTextureView.swift */,
+				1DDB7FBE20DA18110052FFDE /* MetalTextureView.metal */,
+				1DD9895B208071FF00B209A5 /* AppDelegate.swift */,
+				1DDB7FC920DB56360052FFDE /* Graphics.swift */,
+				1DA4458E21B10149006CA1D1 /* ColorMap.swift */,
+				1DD9895F2080720000B209A5 /* Assets.xcassets */,
+				1DD989612080720000B209A5 /* Main.storyboard */,
+				1D5157ED217A3F2700658510 /* SaveLoadViewController.swift */,
+				1D5157EF217B92AE00658510 /* HelpViewController.swift */,
+				1D5157F1217B938B00658510 /* help.txt */,
+				1DD989642080720000B209A5 /* Info.plist */,
+				1DD989652080720000B209A5 /* Entitlements.entitlements */,
+			);
+			path = Source;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		1DD98957208071FF00B209A5 /* OSX-BurningChicken */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DD989682080720000B209A5 /* Build configuration list for PBXNativeTarget "OSX-BurningChicken" */;
+			buildPhases = (
+				1DD98954208071FF00B209A5 /* Sources */,
+				1DD98955208071FF00B209A5 /* Frameworks */,
+				1DD98956208071FF00B209A5 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "OSX-BurningChicken";
+			productName = MandelBoxOSX;
+			productReference = 1DD98958208071FF00B209A5 /* OSX-BurningChicken.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		1DD98950208071FF00B209A5 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0930;
+				LastUpgradeCheck = 0930;
+				ORGANIZATIONNAME = "Harry Kosalos";
+				TargetAttributes = {
+					1DD98957208071FF00B209A5 = {
+						CreatedOnToolsVersion = 9.3;
+						LastSwiftMigration = 0940;
+					};
+				};
+			};
+			buildConfigurationList = 1DD98953208071FF00B209A5 /* Build configuration list for PBXProject "OSX-BurningChicken" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 1DD9894F208071FF00B209A5;
+			productRefGroup = 1DD98959208071FF00B209A5 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				1DD98957208071FF00B209A5 /* OSX-BurningChicken */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		1DD98956208071FF00B209A5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1DD989602080720000B209A5 /* Assets.xcassets in Resources */,
+				1D5157F2217B938B00658510 /* help.txt in Resources */,
+				1DD989632080720000B209A5 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		1DD98954208071FF00B209A5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1D5157E8216F17CF00658510 /* WidgetGroup.swift in Sources */,
+				1D5157EC2174518600658510 /* Shaders.metal in Sources */,
+				1DD9895E208071FF00B209A5 /* ViewController.swift in Sources */,
+				1DDB7FCA20DB56360052FFDE /* Graphics.swift in Sources */,
+				1DDB7FBF20DA18110052FFDE /* MetalTextureView.swift in Sources */,
+				1D5157EE217A3F2700658510 /* SaveLoadViewController.swift in Sources */,
+				1DA4458D21B0FFC3006CA1D1 /* Shaders.m in Sources */,
+				1DDB7FC020DA18110052FFDE /* MetalTextureView.metal in Sources */,
+				1DD9895C208071FF00B209A5 /* AppDelegate.swift in Sources */,
+				1D5157F0217B92AE00658510 /* HelpViewController.swift in Sources */,
+				1DA4458F21B10149006CA1D1 /* ColorMap.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		1DD989612080720000B209A5 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1DD989622080720000B209A5 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		1DD989662080720000B209A5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		1DD989672080720000B209A5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		1DD989692080720000B209A5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Source/Entitlements.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 7237X7VY2S;
+				INFOPLIST_FILE = "$(SRCROOT)/Source/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "Harry.com.OSX-BurningChicken";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = Source/Shader.h;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.2;
+			};
+			name = Debug;
+		};
+		1DD9896A2080720000B209A5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Source/Entitlements.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 7237X7VY2S;
+				INFOPLIST_FILE = "$(SRCROOT)/Source/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "Harry.com.OSX-BurningChicken";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = Source/Shader.h;
+				SWIFT_VERSION = 4.2;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DD98953208071FF00B209A5 /* Build configuration list for PBXProject "OSX-BurningChicken" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DD989662080720000B209A5 /* Debug */,
+				1DD989672080720000B209A5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DD989682080720000B209A5 /* Build configuration list for PBXNativeTarget "OSX-BurningChicken" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DD989692080720000B209A5 /* Debug */,
+				1DD9896A2080720000B209A5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 1DD98950208071FF00B209A5 /* Project object */;
+}
