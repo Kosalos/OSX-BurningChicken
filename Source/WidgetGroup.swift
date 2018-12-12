@@ -10,7 +10,7 @@ protocol WGDelegate {
 }
 
 enum WgEntryKind { case singleFloat,dualFloat,dropDown,option,command,toggle,legend,line,string,color,gap,float3Dual,float3Single,float3xy,float3z, move,zoom }
-enum WgIdent { case none,resolution,saveLoad,loadNext,reset,help,coloring,chicken,shadow,pt0,pt1,pt2,lt0,lt1,lt2,foam }
+enum WgIdent { case none,resolution,saveLoad,loadNext,reset,help,coloring,chicken,shadow,pt0,pt1,pt2,lt0,lt1,lt2,foam,variation }
 
 let wgBackgroundColor = NSColor(red:0.1, green:0.02, blue:0.02, alpha: 1)
 let wgHighlightColor = NSColor(red:0.4, green:0.2, blue:0, alpha:1)

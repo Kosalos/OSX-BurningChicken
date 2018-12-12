@@ -1,6 +1,6 @@
-// for info on Point and Line orbit traps visit:
-// http://www.iquilezles.org/www/articles/ftrapsgeometric/ftrapsgeometric.htm
+// Point and Line orbit traps: http://www.iquilezles.org/www/articles/ftrapsgeometric/ftrapsgeometric.htm
 // foam style: https://fractalforums.org/programming/11/mandelbrot-foam/2360
+// variations: https://fractalforums.org/share-a-fractal/22/a-few-mandelbrot-variations-i-discovered-stay-tuned-for-more/216
 
 #include <metal_stdlib>
 #import "Shader.h"
@@ -48,24 +48,68 @@ kernel void fractalShader
     float lastAdded = 0;
     float count = 0;
     float2 z = float2();
-    float z2 = 0;
+    float zr,z2 = 0;
     float minDist = 999;
     float2 q,w;
     
-    if(control.foamFlag) {
+    if(control.variation == 1) {
         z = float2(1/control.power,0);
         q = float2(control.foamQ, 0);
         w = float2(control.foamW, 0);
     }
     
     for(iter = 0;iter < maxIter;++iter) {
-        
-        if(control.foamFlag) {
-            w = complexDiv( complexMul(q,w),z);
-            z = complexAdd( complexAdd( csqr(z), csqr(w)),c);
-        }
-        else {
-            z = complexPower(z,control.power) + c;
+        switch(control.variation) {
+            case 0 :    // original Mandelbrot
+                z = complexPower(z,control.power) + c;
+                break;
+                
+            case 1 :    // Foam
+                w = complexDiv( complexMul(q,w),z);
+                z = complexAdd( complexAdd( csqr(z), csqr(w)),c);
+                break;
+                
+            case 2 :    // chicken
+                z = complexPower(z,control.power) + c;
+                if(z.y < 0) z.y = -z.y;
+                break;
+                
+            case 3 :    // variation #3
+                zr = z.x;
+                if (z.x > 0) {
+                    z.x = z.x*z.x - z.y*z.y + c.x;
+                    z.y = 2*zr*abs(z.y) + c.y;
+                } else {
+                    z.x = z.x*z.x - z.y*z.y + c.x;
+                    z.y = 2*abs(zr)*z.y + c.y;
+                }
+                break;
+                
+            case 4 : // variation #8
+                zr = z.x;
+                if (z.y > 0) {
+                    z.x = abs(z.x*z.x - z.y*z.y) + c.x;
+                    z.y = 2*zr*z.y + c.y;
+                } else {
+                    z.x = (z.x*z.x - z.y*z.y) + c.x;
+                    z.y = 2*zr*z.y + abs(c.y);
+                }
+                break;
+                
+            case 5 : // variation # 9
+                zr = z.x;
+                z.x = (z.x*z.x - z.y*z.y) + c.x;
+                z.y = -2*abs(zr)*z.y + c.y;
+                zr = z.x;
+                z.x = (z.x*z.x - z.y*z.y);
+                z.y = 2*abs(zr)*z.y + c.y;
+                break;
+                
+            case 6 : // variation #12
+                zr = z.x;
+                z.x = -(z.x*z.x - 3*z.y*z.y)*(z.x) + c.x;
+                z.y = -abs(3*zr*zr - z.y*z.y)*(z.y) + c.y;
+                break;
         }
         
         if(control.coloringFlag && (iter >= skip)) {
@@ -73,8 +117,6 @@ kernel void fractalShader
             lastAdded = 0.5 + 0.5 * sin(control.stripeDensity * atan2(z.y, z.x));
             avg += lastAdded;
         }
-        
-        if(control.chickenFlag && z.y < 0) { z.y = -z.y; }
         
         // point,line orbit traps ------------------------------------------
         for(int i=0;i<3;++i) {
@@ -119,7 +161,7 @@ kernel void fractalShader
     }
     else {
         iter = (minDist > 900) ? iter * 2 : int(minDist * minDist);
-        if(control.foamFlag) iter = (iter - 10) * 3;
+        if(control.variation == 1) iter = (iter - 10) * 3; // Foam
         
         if(iter < 0) iter = 0; else if(iter > 255) iter = 255;
         
@@ -145,7 +187,7 @@ kernel void shadowShader
 {
     if(p.x > uint(control.xSize)) return; // screen size not evenly divisible by threadGroups
     if(p.y > uint(control.ySize)) return;
-
+    
     float4 v = src.read(p);
     
     if(p.x > 1 && p.y > 1) {

@@ -66,8 +66,7 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
         dvrCount = 1 // resize metalview without delay
         
         control.coloringFlag = 1
-        control.chickenFlag = 0
-        control.foamFlag = 0
+        control.variation = 0
         
         reset()
     }
@@ -134,7 +133,7 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
         control.ymax = 1.5
         control.skip = 20
         control.stripeDensity = -1.343
-        control.escapeRadius = 1.702
+        control.escapeRadius = 4
         control.multiplier = -0.381
         control.R = 0
         control.G = 0.4
@@ -159,27 +158,31 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
         wg.addDualFloat("M",&panX,&panY,-10,10,1, "Move")
 
         wg.addLine()
-        wg.addSingleFloat("P",&control.power,0.5,5,0.0002, "Power")
         wg.addSingleFloat("I",&control.maxIter,40,200,3,"maxIter")
         wg.addSingleFloat("C",&control.contrast,0.1,5,0.03, "Contrast")
         wg.addSingleFloat("S",&control.skip,1,100,0.2,"Skip")
 
         wg.addLine()
-        wg.addColoredCommand("K",.chicken,"Chicken")
+        wg.addCommand("X",String(format:"Variation %d",control.variation),.variation)
 
-        wg.addLine()
-        wg.addColoredCommand("F",.foam,"Foam")
-        wg.addSingleFloat("Q",&control.foamQ,-1,2,0.001,"foamQ")
-        wg.addSingleFloat("W",&control.foamW,-1,2,0.001,"foamW")
-        
+        switch control.variation {
+        case 0,1 :
+            wg.addSingleFloat("P",&control.power,0.5,5,0.0002, "Power")
+            if control.variation == 1 {
+                wg.addSingleFloat("Q",&control.foamQ,-1,2,0.001,"foamQ")
+                wg.addSingleFloat("W",&control.foamW,-1,2,0.001,"foamW")
+            }
+        default : break
+        }
+
         wg.addLine()
         wg.addColoredCommand("D",.shadow,"Shadow")
         
         wg.addLine()
-        wg.addColor(.coloring,Float(RowHT)*7+3)
+        wg.addColor(.coloring,Float(RowHT)*7)
         wg.addCommand("T","Coloring",.coloring)
         wg.addSingleFloat("2",&control.stripeDensity,-10,10,0.03, "Stripe")
-        wg.addSingleFloat("3",&control.escapeRadius,0.01,4,0.01, "Escape")
+        wg.addSingleFloat("3",&control.escapeRadius,0.01,15,0.01, "Escape")
         wg.addSingleFloat("4",&control.multiplier,-2,2,0.01, "Mult")
         wg.addSingleFloat("5",&control.R,0,1,0.008, "Color R")
         wg.addSingleFloat("6",&control.G,0,1,0.008, "Color G")
@@ -236,16 +239,12 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
             control.coloringFlag = control.coloringFlag == 0 ? 1 : 0
             updateImage()
             
-        case .chicken :
-            control.chickenFlag = control.chickenFlag == 0 ? 1 : 0
-            if control.chickenFlag != 0 { control.foamFlag = 0 }
+        case .variation :
+            control.variation += 1
+            if control.variation >= NUM_VARIATION { control.variation = 0 }
+            initializeWidgetGroup()
             wgCommand(.reset)
-            
-        case .foam :
-            control.foamFlag = control.foamFlag == 0 ? 1 : 0
-            if control.foamFlag != 0 { control.chickenFlag = 0 }
-            wgCommand(.reset)
-            
+
         case .shadow :
             shadowFlag = !shadowFlag
             metalTextureViewL.initialize(shadowFlag ? texture2 : texture1)
@@ -297,10 +296,8 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
     func wgGetColor(_ ident:WgIdent) -> NSColor {
         var highlight:Bool = false
         switch(ident) {
-        case .chicken  : highlight = control.chickenFlag > 0
         case .shadow   : highlight = shadowFlag
         case .coloring : highlight = control.coloringFlag > 0
-        case .foam     : highlight = control.foamFlag > 0
         case .pt0 : highlight = getPTrapActive(0) > 0
         case .pt1 : highlight = getPTrapActive(1) > 0
         case .pt2 : highlight = getPTrapActive(2) > 0
@@ -332,6 +329,7 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
     }
     
     func controlJustLoaded() {
+        initializeWidgetGroup()
         wg.refresh()
         setImageViewResolution()
         updateImage()
@@ -386,7 +384,7 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
         zoomValue = 0
 
         control.dx = (control.xmax - control.xmin) / Float(control.xSize)
-        control.dy = (control.ymax - control.ymin) / Float(control.xSize)
+        control.dy = (control.ymax - control.ymin) / Float(control.ySize)
         cBuffer.contents().copyMemory(from: &control, byteCount:MemoryLayout<Control>.stride)
         
         let commandBuffer = commandQueue.makeCommandBuffer()!
@@ -523,6 +521,11 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
         pt.y = 0
         wg.focusMovement(pt,0)
     }
+    
+    override func scrollWheel(with event: NSEvent) {
+        zoomValue = Float(event.deltaY/20)
+    }
+    
 }
 
 // ===============================================

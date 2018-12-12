@@ -9,6 +9,8 @@
 
 #include <simd/simd.h>
 
+#define NUM_VARIATION 7
+
 typedef struct {
     float x,y;
     int active;
@@ -28,8 +30,8 @@ typedef struct {
     float ymin,ymax,dy;
     
     int coloringFlag;
-    int chickenFlag;
-    
+    int variation;      // 0 ... 6 = original Mandelbrot, Foam, chicken, variations 1..4
+
     float maxIter;
     float skip;
     float stripeDensity;
@@ -44,8 +46,6 @@ typedef struct {
     LineOrbitTrap lTrap[3];
     
     float power;
-    
-    int foamFlag;       // https://fractalforums.org/programming/11/mandelbrot-foam/2360
     float foamQ;
     float foamW;
     float future[2];
