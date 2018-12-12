@@ -52,7 +52,7 @@ kernel void fractalShader
     float minDist = 999;
     float2 q,w;
     
-    if(control.variation == 1) {
+    if(control.variation == 1 || control.variation > 2) {
         z = float2(1/control.power,0);
         q = float2(control.foamQ, 0);
         w = float2(control.foamW, 0);

@@ -166,7 +166,7 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
         wg.addCommand("X",String(format:"Variation %d",control.variation),.variation)
 
         switch control.variation {
-        case 0,1 :
+        case 0,1,3,4,5,6 :
             wg.addSingleFloat("P",&control.power,0.5,5,0.0002, "Power")
             if control.variation == 1 {
                 wg.addSingleFloat("Q",&control.foamQ,-1,2,0.001,"foamQ")
