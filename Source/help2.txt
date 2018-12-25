@@ -1,0 +1,56 @@
+Burning Chicken 3D
+
+Note: Hold down the <Option> key while dragging the image
+      to set the rotation direction and speed.
+      Click on image to stop rotation.
+
+The panel on the left holds one or two dimensional widgets.
+
+Mouse click on a widget to select it.
+It's legend will turn Green.
+You can also move the focus up/down with the '<' and '>' keys.
+Press the assigned Hotkey character to move the focus directly.
+
+Now on the image:
+Mouse drag to control the widget's parameters.
+You can also use the Arrow keys.
+Note: Hold down the <option> key to increase the alteration amount.
+Note: Hold down the <A> key to decrease the alteration amount.
+
+Note: Press <1> to toggle display of the control panel.
+Note: Use can exit program by press the <esc> key.
+
+2. Height
+   Control height of mountain ranges
+
+M. Move
+   Set position of terrain.
+   (press 'R' to reset to starting position)
+
+3. Spread
+   Control roving light sources' width.
+
+4. Ambient
+   Set background light level.
+
+5. Speed
+   Control speed of roving light source.
+
+6. Radius
+   Control distance of roving light source.
+
+7. Height
+   Control height of roving light source.
+
+8. Smooth
+   Control terriain weathering.
+
+O. Stereo
+   Toggles stereo viewing
+   The image is rendered twice, for 'cross-eyed' 3D viewing.
+   With the iPad held two feet away, slightly cross your eyes so that there is a
+   third image in the middle.
+   Relax your gaze, and concentrate only on that middle image, which is in 3D.
+
+R. Reset
+   Reset the image position.

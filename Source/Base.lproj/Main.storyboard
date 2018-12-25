@@ -39,7 +39,7 @@
         <!--Window Controller-->
         <scene sceneID="R2V-B0-nI4">
             <objects>
-                <windowController showSeguePresentationStyle="single" id="B8D-0N-5wS" sceneMemberID="viewController">
+                <windowController storyboardIdentifier="Main" showSeguePresentationStyle="single" id="B8D-0N-5wS" sceneMemberID="viewController">
                     <window key="window" title="Burning Chicken" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hasShadow="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="IQv-IB-iLA">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
@@ -55,7 +55,7 @@
                 </windowController>
                 <customObject id="Oky-zY-oP4" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-561" y="18.5"/>
+            <point key="canvasLocation" x="-569" y="34"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="hIz-AP-VOD">
@@ -84,6 +84,59 @@
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-561" y="257"/>
+        </scene>
+        <!--Win3D-->
+        <scene sceneID="cGH-O9-3XH">
+            <objects>
+                <windowController storyboardIdentifier="Win3D" showSeguePresentationStyle="single" id="vZw-GN-IO8" userLabel="Win3D" sceneMemberID="viewController">
+                    <window key="window" title="Burning Chicken 3D" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="224-h3-QQ4">
+                        <windowStyleMask key="styleMask" titled="YES" closable="YES" resizable="YES"/>
+                        <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+                        <rect key="contentRect" x="425" y="461" width="480" height="270"/>
+                        <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
+                        <connections>
+                            <outlet property="delegate" destination="vZw-GN-IO8" id="hrE-YX-xXU"/>
+                        </connections>
+                    </window>
+                    <connections>
+                        <segue destination="qE8-Jx-0km" kind="relationship" relationship="window.shadowedContentViewController" id="Nu9-ca-deU"/>
+                    </connections>
+                </windowController>
+                <customObject id="A83-Ny-Ogb" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="31" y="-130"/>
+        </scene>
+        <!--Win3D View Controller-->
+        <scene sceneID="iCb-gA-sIj">
+            <objects>
+                <viewController id="qE8-Jx-0km" customClass="Win3DViewController" customModule="OSX_BurningChicken" sceneMemberID="viewController">
+                    <view key="view" id="2M2-Fu-jIV" customClass="BaseNSView" customModule="OSX_BurningChicken" customModuleProvider="target">
+                        <rect key="frame" x="0.0" y="0.0" width="392" height="192"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <customView id="kKX-ut-YBR" customClass="WidgetGroup" customModule="OSX_BurningChicken" customModuleProvider="target">
+                                <rect key="frame" x="20" y="20" width="70" height="138"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                            </customView>
+                            <customView id="WNl-Q1-kV6" customClass="MTKView">
+                                <rect key="frame" x="104" y="20" width="125" height="139"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                            </customView>
+                            <customView id="g3y-H0-olj" customClass="MTKView">
+                                <rect key="frame" x="247" y="20" width="125" height="139"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                            </customView>
+                        </subviews>
+                    </view>
+                    <connections>
+                        <outlet property="d3ViewL" destination="WNl-Q1-kV6" id="j7g-bg-AaP"/>
+                        <outlet property="d3ViewR" destination="g3y-H0-olj" id="vF4-W9-lwI"/>
+                        <outlet property="wg" destination="kKX-ut-YBR" id="dXI-M5-yud"/>
+                    </connections>
+                </viewController>
+                <customObject id="mzi-LF-VNi" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="193" y="209"/>
         </scene>
         <!--HelpVC-->
         <scene sceneID="xH1-6v-HEC">

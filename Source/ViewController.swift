@@ -3,56 +3,61 @@ import MetalKit
 
 var vc:ViewController! = nil
 var g = Graphics()
+var win3D:NSWindowController! = nil
+var cBuffer:MTLBuffer! = nil
+var colorBuffer:MTLBuffer! = nil
 
 class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
     var shadowFlag:Bool = false
     var control = Control()
     var threadGroupCount = MTLSize()
     var threadGroups = MTLSize()
-    var cBuffer:MTLBuffer! = nil
-    var colorBuffer:MTLBuffer! = nil
     var texture1: MTLTexture!
     var texture2: MTLTexture!
     var pipeline:[MTLComputePipelineState] = []
     let queue = DispatchQueue(label:"Q")
+    var offset3D = float3()
     
-    lazy var device: MTLDevice! = MTLCreateSystemDefaultDevice()
-    lazy var defaultLibrary: MTLLibrary! = { self.device.makeDefaultLibrary() }()
-    lazy var commandQueue: MTLCommandQueue! = { return self.device.makeCommandQueue() }()
+    lazy var device2D: MTLDevice! = MTLCreateSystemDefaultDevice()
+    lazy var defaultLibrary: MTLLibrary! = { self.device2D.makeDefaultLibrary() }()
+    lazy var commandQueue: MTLCommandQueue! = { return self.device2D.makeCommandQueue() }()
     
     @IBOutlet var wg: WidgetGroup!
     @IBOutlet var metalTextureViewL: MetalTextureView!
     
+    let PIPELINE_FRACTAL = 0
+    let PIPELINE_SHADOW  = 1
+    let shaderNames = [ "fractalShader","shadowShader" ]
+
     override func viewDidLoad() {
         super.viewDidLoad()
         vc = self
         wg.delegate = self
-
-        cBuffer = device.makeBuffer(bytes: &control, length: MemoryLayout<Control>.stride, options:MTLResourceOptions.storageModeShared)
-
-        let defaultLibrary:MTLLibrary! = device.makeDefaultLibrary()
-
+        
+        cBuffer = device2D.makeBuffer(bytes: &control, length: MemoryLayout<Control>.stride, options:MTLResourceOptions.storageModeShared)
+        
+        let defaultLibrary:MTLLibrary! = device2D.makeDefaultLibrary()
+        
         let jbSize = MemoryLayout<float3>.stride * 256
-        colorBuffer = device.makeBuffer(length:jbSize, options:MTLResourceOptions.storageModeShared)
+        colorBuffer = device2D.makeBuffer(length:jbSize, options:MTLResourceOptions.storageModeShared)
         colorBuffer.contents().copyMemory(from:colorMap, byteCount:jbSize)
-
+        
         //------------------------------
         func loadShader(_ name:String) -> MTLComputePipelineState {
             do {
                 guard let fn = defaultLibrary.makeFunction(name: name)  else { print("shader not found: " + name); exit(0) }
-                return try device.makeComputePipelineState(function: fn)
+                return try device2D.makeComputePipelineState(function: fn)
             }
             catch { print("pipeline failure for : " + name); exit(0) }
         }
         
-        let shaderNames = [ "fractalShader","shadowShader" ]
         for i in 0 ..< shaderNames.count { pipeline.append(loadShader(shaderNames[i])) }
         //------------------------------
-
-        let w = pipeline[0].threadExecutionWidth
-        let h = pipeline[0].maxTotalThreadsPerThreadgroup / w
+        
+        let w = pipeline[PIPELINE_FRACTAL].threadExecutionWidth
+        let h = pipeline[PIPELINE_FRACTAL].maxTotalThreadsPerThreadgroup / w
         threadGroupCount = MTLSizeMake(w, h, 1)
-
+        
         setControlPointer(&control)
         initializeWidgetGroup()
         layoutViews()
@@ -65,10 +70,20 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
         resizeIfNecessary()
         dvrCount = 1 // resize metalview without delay
         
+        control.win3DFlag = 0
         control.coloringFlag = 1
         control.variation = 0
-        
-        reset()
+    }
+    
+    func windowWillClose(_ aNotification: Notification) {
+        if let w = win3D { w.close() }
+    }
+    
+    func win3DClosed() {
+        win3D = nil
+        control.win3DFlag = 0
+        wg.refresh()
+        updateImage() // to erase bounding box
     }
     
     //MARK: -
@@ -77,7 +92,7 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
         let minWinSize:CGSize = CGSize(width:700, height:800)
         var r:CGRect = (view.window?.frame)!
         var needSizing:Bool = false
-
+        
         if r.size.width  < minWinSize.width  { r.size.width = minWinSize.width; needSizing = true }
         if r.size.height < minWinSize.height { r.size.height = minWinSize.height; needSizing = true }
         
@@ -87,6 +102,7 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
     }
     
     func windowDidResize(_ notification: Notification) {
+        reset()
         resizeIfNecessary()
         resetDelayedViewResizing()
     }
@@ -108,7 +124,7 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
     
     @objc func timerHandler() {
         var refreshNeeded:Bool = wg.update()
-        if zoomValue != 0 || panX != 0 || panY != 0 { refreshNeeded = true }
+        if zoomValue != 0 || panX != 0 || panY != 0 || offset3D.x != 0 || offset3D.y != 0 || offset3D.z != 0 { refreshNeeded = true }
         if refreshNeeded { updateImage() }
         
         if dvrCount > 0 {
@@ -122,6 +138,9 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
     //MARK: -
     
     func reset() {
+        if let w = win3D { w.close() }
+
+        offset3D = float3()
         zoomValue = 0
         panX = 0
         panY = 0
@@ -144,6 +163,8 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
         control.foamQ = -0.5
         control.foamW = 0.2
         
+        control.height = 0.1
+        
         updateImage()
         wg.hotKey("M")
     }
@@ -156,15 +177,15 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
         wg.addCommand("R","Reset",.reset)
         wg.addSingleFloat("Z",&zoomValue,-1,1,0.01, "Zoom")
         wg.addDualFloat("M",&panX,&panY,-10,10,1, "Move")
-
+        
         wg.addLine()
         wg.addSingleFloat("I",&control.maxIter,40,200,3,"maxIter")
         wg.addSingleFloat("C",&control.contrast,0.1,5,0.03, "Contrast")
         wg.addSingleFloat("S",&control.skip,1,100,0.2,"Skip")
-
+        
         wg.addLine()
         wg.addCommand("X",String(format:"Variation %d",control.variation),.variation)
-
+        
         switch control.variation {
         case 0,1,3,4,5,6 :
             wg.addSingleFloat("P",&control.power,0.5,5,0.0002, "Power")
@@ -174,7 +195,12 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
             }
         default : break
         }
-
+        
+        wg.addLine()
+        wg.addColor(.win3D,Float(RowHT)*2)
+        wg.addCommand("L","3D Window",.win3D)
+        wg.addTriplet("J",&offset3D,-1,1,0.1, "3D ROI")
+        
         wg.addLine()
         wg.addColoredCommand("D",.shadow,"Shadow")
         
@@ -212,13 +238,35 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
         lineTrapGroup(1,.lt1)
         lineTrapGroup(2,.lt2)
         // ------------------------------------
-
+        
         wg.addLine()
         wg.addCommand("V","Save/Load",.saveLoad)
         wg.addCommand("L","Load Next",.loadNext)
         wg.addCommand("H","Help",.help)
-
+        
         wg.refresh()
+    }
+    
+    func toggle3DView() {
+        control.win3DFlag = control.win3DFlag > 0 ? 0 : 1
+        
+        if control.win3DFlag > 0 {
+            if win3D == nil {
+                let mainStoryboard = NSStoryboard.init(name: NSStoryboard.Name("Main"), bundle: nil)
+                win3D = mainStoryboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier("Win3D")) as? NSWindowController
+            }
+            
+            control.xmin3D = -1.60189855
+            control.xmax3D = -0.976436495
+            control.ymin3D = -0.20827961
+            control.ymax3D = 0.235990882
+            win3D.showWindow(self)
+        }
+        else {
+            win3D.close()
+        }
+        
+        updateImage()
     }
     
     //MARK: -
@@ -231,8 +279,13 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
         }
         
         switch(cmd) {
-        case .saveLoad : presentPopover("SaveLoadVC")
-        case .help : presentPopover("HelpVC")
+        case .win3D :
+            toggle3DView()
+        case .saveLoad :
+            presentPopover("SaveLoadVC")
+        case .help :
+            helpIndex = 0
+            presentPopover("HelpVC")
             
         case .reset : reset()
         case .coloring :
@@ -240,11 +293,16 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
             updateImage()
             
         case .variation :
+            if control.win3DFlag > 0 {
+                win3D.close()
+                win3DClosed()
+            }
+            
             control.variation += 1
             if control.variation >= NUM_VARIATION { control.variation = 0 }
             initializeWidgetGroup()
             wgCommand(.reset)
-
+            
         case .shadow :
             shadowFlag = !shadowFlag
             metalTextureViewL.initialize(shadowFlag ? texture2 : texture1)
@@ -296,6 +354,7 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
     func wgGetColor(_ ident:WgIdent) -> NSColor {
         var highlight:Bool = false
         switch(ident) {
+        case .win3D    : highlight = control.win3DFlag > 0
         case .shadow   : highlight = shadowFlag
         case .coloring : highlight = control.coloringFlag > 0
         case .pt0 : highlight = getPTrapActive(0) > 0
@@ -315,15 +374,17 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
     
     //MARK: -
     
+    let WGWidth:CGFloat = 140
+    
     func layoutViews() {
         let xs = view.bounds.width
         let ys = view.bounds.height
-        let xBase:CGFloat = wg.isHidden ? 0 : 140
+        let xBase:CGFloat = wg.isHidden ? 0 : WGWidth
         
         if !wg.isHidden { wg.frame = CGRect(x:1, y:1, width:xBase-1, height:ys-2) }
         
         metalTextureViewL.frame = CGRect(x:xBase+1, y:1, width:xs-xBase-2, height:ys-2)
-
+        
         setImageViewResolution()
         updateImage()
     }
@@ -347,9 +408,9 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
             height: ysz,
             mipmapped: false)
         
-        texture1 = device.makeTexture(descriptor: textureDescriptor)!
-        texture2 = device.makeTexture(descriptor: textureDescriptor)!
-
+        texture1 = device2D.makeTexture(descriptor: textureDescriptor)!
+        texture2 = device2D.makeTexture(descriptor: textureDescriptor)!
+        
         metalTextureViewL.initialize(texture1)
         
         let xs = xsz/threadGroupCount.width + 1
@@ -359,41 +420,80 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
     
     //MARK: -
     
-    func calcFractal() {
+    func updateRegionsOfInterest() {
         // pan ----------------
-        let mx = (control.xmax - control.xmin) * panX / 100
-        let my = -(control.ymax - control.ymin) * panY / 100
-        control.xmin -= mx
-        control.xmax -= mx
-        control.ymin -= my
-        control.ymax -= my
+        if panX != 0 || panY != 0 {
+            let mx = (control.xmax - control.xmin) * panX / 100
+            let my = -(control.ymax - control.ymin) * panY / 100
+            control.xmin -= mx
+            control.xmax -= mx
+            control.ymin -= my
+            control.ymax -= my
+            panX = 0
+            panY = 0
+        }
         
         // zoom ---------------
-        let amount:Float = (1.0 - zoomValue)
-        let xsize = (control.xmax - control.xmin) * amount
-        let ysize = (control.ymax - control.ymin) * amount
-        let xc = (control.xmin + control.xmax) / 2
-        let yc = (control.ymin + control.ymax) / 2
-        control.xmin = xc - xsize/2
-        control.xmax = xc + xsize/2
-        control.ymin = yc - ysize/2
-        control.ymax = yc + ysize/2
+        if zoomValue != 0 {
+            let amount:Float = (1.0 - zoomValue)
+            let xsize = (control.xmax - control.xmin) * amount
+            let ysize = (control.ymax - control.ymin) * amount
+            let xc = (control.xmin + control.xmax) / 2
+            let yc = (control.ymin + control.ymax) / 2
+            control.xmin = xc - xsize/2
+            control.xmax = xc + xsize/2
+            control.ymin = yc - ysize/2
+            control.ymax = yc + ysize/2
+            zoomValue = 0
+        }
         
-        panX = 0  // reset change amounts
-        panY = 0
-        zoomValue = 0
-
+        // 3D pan, zoom --------------
+        if offset3D != float3() {
+            let dx:Float = offset3D.x * control.dx * 5
+            let dy:Float = -offset3D.y * control.dy * 5
+            control.xmin3D += dx; control.xmax3D += dx
+            control.ymin3D += dy; control.ymax3D += dy
+            
+            if offset3D.z != 0 {
+                let amount:Float = (1.0 - offset3D.z)
+                var xsize = (control.xmax3D - control.xmin3D) * amount
+                var ysize = (control.ymax3D - control.ymin3D) * amount
+                let minSz:Float = 0.005
+                if xsize < minSz { xsize = minSz }
+                if ysize < minSz { ysize = minSz }
+                let xc = (control.xmin3D + control.xmax3D) / 2
+                let yc = (control.ymin3D + control.ymax3D) / 2
+                control.xmin3D = xc - xsize/2
+                control.xmax3D = xc + xsize/2
+                control.ymin3D = yc - ysize/2
+                control.ymax3D = yc + ysize/2
+            }
+            offset3D = float3()
+        }
+        
         control.dx = (control.xmax - control.xmin) / Float(control.xSize)
         control.dy = (control.ymax - control.ymin) / Float(control.ySize)
+        control.dx3D = (control.xmax3D - control.xmin3D) / Float(SIZE3D)
+        control.dy3D = (control.ymax3D - control.ymin3D) / Float(SIZE3D)
+    }
+    
+    //MARK: -
+    
+    func calcFractal() {
+        updateRegionsOfInterest()
+        
+        control.is3DWindow = 0
+        
         cBuffer.contents().copyMemory(from: &control, byteCount:MemoryLayout<Control>.stride)
         
         let commandBuffer = commandQueue.makeCommandBuffer()!
         let commandEncoder = commandBuffer.makeComputeCommandEncoder()!
         
-        commandEncoder.setComputePipelineState(pipeline[0])
+        commandEncoder.setComputePipelineState(pipeline[PIPELINE_FRACTAL])
         commandEncoder.setTexture(texture1, index: 0)
-        commandEncoder.setBuffer(cBuffer, offset: 0, index: 0)
-        commandEncoder.setBuffer(colorBuffer, offset: 0, index: 1)
+        // skip unused buffer 0
+        commandEncoder.setBuffer(cBuffer, offset: 0, index: 1)
+        commandEncoder.setBuffer(colorBuffer, offset: 0, index: 2)
         
         commandEncoder.dispatchThreadgroups(threadGroups, threadsPerThreadgroup: threadGroupCount)
         commandEncoder.endEncoding()
@@ -405,7 +505,7 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
             let commandBuffer = commandQueue.makeCommandBuffer()!
             let commandEncoder = commandBuffer.makeComputeCommandEncoder()!
             
-            commandEncoder.setComputePipelineState(pipeline[1])
+            commandEncoder.setComputePipelineState(pipeline[PIPELINE_SHADOW])
             commandEncoder.setTexture(texture1, index: 0)
             commandEncoder.setTexture(texture2, index: 1)
             commandEncoder.setBuffer(cBuffer, offset: 0, index: 0)
@@ -418,14 +518,22 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
     }
     
     //MARK: -
-
+    
     func updateImage() {
         calcFractal()
         metalTextureViewL.display(metalTextureViewL.layer!)
+        
+        if win3D != nil {
+            vc3D.calcFractal()
+        }
     }
     
     //MARK: -
     
+    func isOptionKeyDown() -> Bool { return optionKeyDown }
+    func isShiftKeyDown() -> Bool { return shiftKeyDown }
+    func isLetterAKeyDown() -> Bool { return letterAKeyDown }
+
     var shiftKeyDown:Bool = false
     var optionKeyDown:Bool = false
     var letterAKeyDown:Bool = false
@@ -522,10 +630,47 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
         wg.focusMovement(pt,0)
     }
     
+    //MARK: -
+    
+    enum Win3DState { case initial,move }
+    
+    func win3DMap(_ pt:NSPoint, _ state:Win3DState) {
+        var pt = pt
+        if !wg.isHidden { pt.x -= WGWidth }
+        
+        let c:float2 = float2(Float(control.xmin + control.dx * Float(pt.x)), Float(control.ymin + control.dy * Float(pt.y)))
+        
+        switch(state) {
+        case .initial :
+            control.xmin3D = c.x; control.xmax3D = c.x
+            control.ymin3D = c.y; control.ymax3D = c.y
+        case .move :
+            if c.x < control.xmin3D { control.xmin3D = c.x }
+            if c.x > control.xmax3D { control.xmax3D = c.x }
+            if c.y < control.ymin3D { control.ymin3D = c.y }
+            if c.y > control.ymax3D { control.ymax3D = c.y }
+            updateImage()
+            vc3D.calcFractal()
+        }
+    }
+    
+    override func rightMouseDown(with event: NSEvent) {
+        if control.win3DFlag > 0 {
+            win3DMap(flippedYCoord(event.locationInWindow),.initial)
+        }
+    }
+    
+    override func rightMouseDragged(with event: NSEvent) {
+        if control.win3DFlag > 0 {
+            win3DMap(flippedYCoord(event.locationInWindow),.move)
+        }
+    }
+    
+    //MARK: -
+    
     override func scrollWheel(with event: NSEvent) {
         zoomValue = Float(event.deltaY/20)
     }
-    
 }
 
 // ===============================================

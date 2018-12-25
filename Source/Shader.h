@@ -10,6 +10,8 @@
 #include <simd/simd.h>
 
 #define NUM_VARIATION 7
+#define SIZE3D 256
+#define SIZE3Dm (SIZE3D - 1)
 
 typedef struct {
     float x,y;
@@ -28,7 +30,7 @@ typedef struct {
     
     float xmin,xmax,dx;
     float ymin,ymax,dy;
-    
+
     int coloringFlag;
     int variation;      // 0 ... 6 = original Mandelbrot, Foam, chicken, variations 1..4
 
@@ -48,8 +50,45 @@ typedef struct {
     float power;
     float foamQ;
     float foamW;
-    float future[2];
+    
+    int is3DWindow;
+    int win3DFlag;
+    int xSize3D,ySize3D;
+    float xmin3D,xmax3D,dx3D;
+    float ymin3D,ymax3D,dy3D;
+    float height;
+    float smooth;
 } Control;
+
+typedef struct {
+    vector_float3 position;
+    vector_float3 normal;
+    vector_float2 texture;
+    vector_float4 color;
+    float height;
+} TVertex;
+
+typedef struct {
+    int count;
+} Counter;
+
+typedef struct {
+    vector_float3 base;
+    float radius;
+    float deltaAngle;
+    float power;        // 1 ... 3
+    float ambient;
+    float height;
+    
+    vector_float3 position;
+    float angle;
+} LightData;
+
+typedef struct {
+    matrix_float4x4 mvp;
+    float pointSize;
+    LightData light;
+} Uniforms;
 
 #ifndef __METAL_VERSION__
 

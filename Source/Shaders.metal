@@ -33,14 +33,44 @@ float2 complexDiv(float2 v1, float2 v2) {
 kernel void fractalShader
 (
  texture2d<float, access::write> outTexture [[texture(0)]],
- constant Control &control [[buffer(0)]],
- constant float3 *color [[buffer(1)]],          // color lookup table[256]
+ device TVertex* vData      [[ buffer(0) ]],
+ constant Control &control  [[ buffer(1) ]],
+ constant float3 *color     [[ buffer(2) ]],    // color lookup table[256]
  uint2 p [[thread_position_in_grid]])
 {
-    if(p.x > uint(control.xSize)) return; // screen size not evenly divisible by threadGroups
-    if(p.y > uint(control.ySize)) return;
     
-    float2 c = float2(control.xmin + control.dx * float(p.x), control.ymin + control.dy * float(p.y));
+    float2 c;
+    
+    if(control.is3DWindow == 0) {        // 2D fractal in Main window
+        if(p.x >= uint(control.xSize)) return; // screen size not evenly divisible by threadGroups
+        if(p.y >= uint(control.ySize)) return;
+        c = float2(control.xmin + control.dx * float(p.x), control.ymin + control.dy * float(p.y));
+        
+        if(control.win3DFlag > 0) {  // draw 3D bounding box
+            bool mark = false;
+            if(c.x >= control.xmin3D && c.x <= control.xmax3D) {
+                if(c.y >= control.ymin3D && c.y <= control.ymin3D + control.dy) mark = true; else
+                    if(c.y >= control.ymax3D && c.y <= control.ymax3D + control.dy) mark = true;
+            }
+            if(!mark) {
+                if(c.y >= control.ymin3D && c.y <= control.ymax3D) {
+                    if(c.x >= control.xmin3D && c.x <= control.xmin3D + control.dx) mark = true; else
+                        if(c.x >= control.xmax3D && c.x <= control.xmax3D + control.dx) mark = true;
+                }
+            }
+            
+            if(mark) {
+                outTexture.write(float4(1,1,1,1),p);
+                return;
+            }
+        }
+    }
+    else {  // 3D rendition in second window
+        if(p.x >= uint(SIZE3D)) return; // screen size not evenly divisible by threadGroups
+        if(p.y >= uint(SIZE3D)) return;
+        c = float2(control.xmin3D + control.dx3D * float(p.x), control.ymin3D + control.dy3D * float(p.y));
+    }
+    
     int iter;
     int maxIter = int(control.maxIter);
     int skip = int(control.skip);
@@ -172,8 +202,16 @@ kernel void fractalShader
     icolor.y = 0.5 + (icolor.y - 0.5) * control.contrast;
     icolor.z = 0.5 + (icolor.z - 0.5) * control.contrast;
     
-    outTexture.write(float4(icolor,1),p);
-    
+    if(control.is3DWindow == 0) {        // 2D fractal in Main window
+        outTexture.write(float4(icolor,1),p);
+    }
+    else { // 3D rendition in second window
+        if(icolor.x < 0.1 && icolor.y < 0.1 && icolor.z < 0.1) icolor = float3(0.3);
+        
+        int index = int(SIZE3D - 1 - p.y) * SIZE3D + int(p.x);
+        vData[index].color = float4(icolor,1);
+        vData[index].height = float(iter);
+    }
 }
 
 // ======================================================================
@@ -226,3 +264,103 @@ kernel void shadowShader
     
     dst.write(v,p);
 }
+
+/////////////////////////////////////////////////////////////////////////
+
+struct Transfer {
+    float4 position [[position]];
+    float4 lighting;
+    float4 color;
+};
+
+vertex Transfer texturedVertexShader
+(
+ constant TVertex *data[[ buffer(0) ]],
+ constant Uniforms &uniforms[[ buffer(1) ]],
+ unsigned int vid [[ vertex_id ]])
+{
+    TVertex in = data[vid];
+    Transfer out;
+    
+    out.color = in.color;
+    out.position = uniforms.mvp * float4(in.position, 1.0);
+    
+    float distance = length(uniforms.light.position - in.position.xyz);
+    float intensity = uniforms.light.ambient + saturate(dot(in.normal.rgb, uniforms.light.position) / pow(distance,uniforms.light.power) );
+    out.lighting = float4(intensity,intensity,intensity,1);
+    
+    return out;
+}
+
+fragment float4 texturedFragmentShader
+(
+ Transfer data [[stage_in]])
+{
+    return data.color * data.lighting;
+}
+
+/////////////////////////////////////////////////////////////////////////
+
+kernel void normalShader
+(
+ device TVertex* v [[ buffer(0) ]],
+ uint2 p [[thread_position_in_grid]])
+{
+    if(p.x >= SIZE3D || p.y >= SIZE3D) return; // data size not evenly divisible by threadGroups
+
+    int i = int(p.y) * SIZE3D + int(p.x);
+    int i2 = i + ((p.x < SIZE3Dm) ? 1 : -1);
+    int i3 = i + ((p.y < SIZE3Dm) ? SIZE3D : -SIZE3D);
+    
+    TVertex v1 = v[i];
+    TVertex v2 = v[i2];
+    TVertex v3 = v[i3];
+    
+    v[i].normal = normalize(cross(v1.position - v2.position, v1.position - v3.position));
+}
+
+/////////////////////////////////////////////////////////////////////////
+
+kernel void smoothingShader
+(
+ constant TVertex* src      [[ buffer(0) ]],
+ device TVertex* dst        [[ buffer(1) ]],
+ constant Control &control  [[ buffer(2) ]],
+ uint2 p [[thread_position_in_grid]])
+{
+    int2 pp = int2(p);
+    
+    if(pp.x >= SIZE3D || pp.y >= SIZE3D) return; // data size not evenly divisible by threadGroups
+    
+    int index = pp.y * SIZE3D + pp.x;
+
+    // determine average height of eight neighbors
+    int count = 0;
+    float totalHeight = 0;
+
+    for(int x = -1; x <= 1; ++x) {
+        if(pp.x + x < 0) continue;
+        if(pp.x + x > SIZE3Dm) continue;
+
+        for(int y = -1; y <= 1; ++y) {
+            if(pp.y + y < 0) continue;
+            if(pp.y + y > SIZE3Dm) continue;
+
+            int index2 = index + y * SIZE3D + x;
+            totalHeight += src[index2].height;
+            
+            ++count;
+        }
+    }
+
+    float averageHt = totalHeight / float(count);
+
+    // smoothed height
+    float ht = src[index].height * control.smooth  + averageHt * (1 - control.smooth);
+
+    TVertex v = src[index];
+    v.position.y = (ht) * control.height / 3.0;
+
+    dst[index] = v;
+}
+

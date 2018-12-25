@@ -7,10 +7,13 @@ protocol WGDelegate {
     func wgGetColor(_ ident:WgIdent) -> NSColor
     func wgOptionSelected(_ ident:WgIdent, _ index:Int)
     func wgGetOptionString(_ ident:WgIdent) -> String
+    func isOptionKeyDown() -> Bool
+    func isShiftKeyDown() -> Bool
+    func isLetterAKeyDown() -> Bool
 }
 
 enum WgEntryKind { case singleFloat,dualFloat,dropDown,option,command,toggle,legend,line,string,color,gap,float3Dual,float3Single,float3xy,float3z, move,zoom }
-enum WgIdent { case none,resolution,saveLoad,loadNext,reset,help,coloring,chicken,shadow,pt0,pt1,pt2,lt0,lt1,lt2,foam,variation }
+enum WgIdent { case none,saveLoad,loadNext,reset,help,coloring,shadow,pt0,pt1,pt2,lt0,lt1,lt2,foam,variation,win3D,stereo }
 
 let wgBackgroundColor = NSColor(red:0.1, green:0.02, blue:0.02, alpha: 1)
 let wgHighlightColor = NSColor(red:0.4, green:0.2, blue:0, alpha:1)
@@ -98,7 +101,8 @@ class WidgetGroup: NSView {
     var previousFocus:Int = NONE
     var delta = float3()
     let color = NSColor.lightGray
-    
+    var parent:NSViewController! = nil
+
     func reset() { data.removeAll() }
     func hasFocus() -> Bool { return focus != NONE }
     func removeAllFocus() { focus = NONE; refresh() }
@@ -420,7 +424,7 @@ class WidgetGroup: NSView {
         case .float3xy, .float3z :
             var v:float3 = float3Value()
             
-            if vc.shiftKeyDown { // Z = X, X = 0
+            if delegate!.isShiftKeyDown() { // Z = X, X = 0
                 v.y = fClamp2(v.y + delta.y * data[focus].deltaValue, data[focus].mRange)
                 v.z = fClamp2(v.z + delta.x * data[focus].deltaValue, data[focus].mRange)
             }
@@ -492,7 +496,7 @@ class WidgetGroup: NSView {
         delta.y = Float(dy)
         delta.z = 0
         
-        if vc.optionKeyDown { delta *= 3 } else if vc.letterAKeyDown { delta *= 0.1 }
+        if delegate!.isOptionKeyDown() { delta *= 3 } else if delegate!.isLetterAKeyDown() { delta *= 0.1 }
     }
     
     //MARK:-

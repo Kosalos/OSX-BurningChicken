@@ -47,6 +47,14 @@ X. Variation
 D. Shadow
    Toggle whether shadowing effect is added.
 
+L. 3D Window
+   Toggle the display of the 3D Window
+
+J. 3D ROI
+   Specify the position and size of the 3D Region Of Interest (ROI).
+
+   Note: Click and Drag with the Right Mouse Button to specify the ROI directly.
+
 T. Coloring
    Toggle color method: traditional color palette lookup,
    or average Coloring algorithm.

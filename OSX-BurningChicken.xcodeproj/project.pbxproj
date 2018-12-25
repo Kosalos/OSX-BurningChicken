@@ -12,6 +12,11 @@
 		1D5157EE217A3F2700658510 /* SaveLoadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D5157ED217A3F2700658510 /* SaveLoadViewController.swift */; };
 		1D5157F0217B92AE00658510 /* HelpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D5157EF217B92AE00658510 /* HelpViewController.swift */; };
 		1D5157F2217B938B00658510 /* help.txt in Resources */ = {isa = PBXBuildFile; fileRef = 1D5157F1217B938B00658510 /* help.txt */; };
+		1D689B1521CEA36200B2631C /* Win3DViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D689B1321CEA36200B2631C /* Win3DViewController.swift */; };
+		1D689B1821CF4D6400B2631C /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D689B1721CF4D6300B2631C /* Renderer.swift */; };
+		1D689B1C21CF510B00B2631C /* ArcBall.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D689B1B21CF510B00B2631C /* ArcBall.swift */; };
+		1D689B1E21D011AA00B2631C /* View3D.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D689B1D21D011AA00B2631C /* View3D.swift */; };
+		1D689B2021D2D6BB00B2631C /* help2.txt in Resources */ = {isa = PBXBuildFile; fileRef = 1D689B1F21D2D6BB00B2631C /* help2.txt */; };
 		1DA4458D21B0FFC3006CA1D1 /* Shaders.m in Sources */ = {isa = PBXBuildFile; fileRef = 1DA4458C21B0FFC3006CA1D1 /* Shaders.m */; };
 		1DA4458F21B10149006CA1D1 /* ColorMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DA4458E21B10149006CA1D1 /* ColorMap.swift */; };
 		1DD9895C208071FF00B209A5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DD9895B208071FF00B209A5 /* AppDelegate.swift */; };
@@ -29,6 +34,11 @@
 		1D5157ED217A3F2700658510 /* SaveLoadViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SaveLoadViewController.swift; sourceTree = "<group>"; };
 		1D5157EF217B92AE00658510 /* HelpViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HelpViewController.swift; sourceTree = "<group>"; };
 		1D5157F1217B938B00658510 /* help.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = help.txt; sourceTree = "<group>"; };
+		1D689B1321CEA36200B2631C /* Win3DViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Win3DViewController.swift; sourceTree = "<group>"; };
+		1D689B1721CF4D6300B2631C /* Renderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Renderer.swift; sourceTree = "<group>"; };
+		1D689B1B21CF510B00B2631C /* ArcBall.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArcBall.swift; sourceTree = "<group>"; };
+		1D689B1D21D011AA00B2631C /* View3D.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = View3D.swift; sourceTree = "<group>"; };
+		1D689B1F21D2D6BB00B2631C /* help2.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = help2.txt; sourceTree = "<group>"; };
 		1DA4458C21B0FFC3006CA1D1 /* Shaders.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Shaders.m; sourceTree = "<group>"; };
 		1DA4458E21B10149006CA1D1 /* ColorMap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorMap.swift; sourceTree = "<group>"; };
 		1DD98958208071FF00B209A5 /* OSX-BurningChicken.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "OSX-BurningChicken.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -75,20 +85,25 @@
 			isa = PBXGroup;
 			children = (
 				1DD9895D208071FF00B209A5 /* ViewController.swift */,
+				1D689B1321CEA36200B2631C /* Win3DViewController.swift */,
 				1D5157E7216F17CF00658510 /* WidgetGroup.swift */,
+				1D689B1D21D011AA00B2631C /* View3D.swift */,
+				1D689B1721CF4D6300B2631C /* Renderer.swift */,
 				1D5157EB2174518600658510 /* Shaders.metal */,
 				1DA4458C21B0FFC3006CA1D1 /* Shaders.m */,
 				1DDB7FC520DA19EA0052FFDE /* Shader.h */,
 				1DDB7FBD20DA18100052FFDE /* MetalTextureView.swift */,
 				1DDB7FBE20DA18110052FFDE /* MetalTextureView.metal */,
 				1DD9895B208071FF00B209A5 /* AppDelegate.swift */,
-				1DDB7FC920DB56360052FFDE /* Graphics.swift */,
-				1DA4458E21B10149006CA1D1 /* ColorMap.swift */,
+				1D689B1B21CF510B00B2631C /* ArcBall.swift */,
 				1DD9895F2080720000B209A5 /* Assets.xcassets */,
 				1DD989612080720000B209A5 /* Main.storyboard */,
 				1D5157ED217A3F2700658510 /* SaveLoadViewController.swift */,
 				1D5157EF217B92AE00658510 /* HelpViewController.swift */,
+				1DA4458E21B10149006CA1D1 /* ColorMap.swift */,
+				1DDB7FC920DB56360052FFDE /* Graphics.swift */,
 				1D5157F1217B938B00658510 /* help.txt */,
+				1D689B1F21D2D6BB00B2631C /* help2.txt */,
 				1DD989642080720000B209A5 /* Info.plist */,
 				1DD989652080720000B209A5 /* Entitlements.entitlements */,
 			);
@@ -156,6 +171,7 @@
 			files = (
 				1DD989602080720000B209A5 /* Assets.xcassets in Resources */,
 				1D5157F2217B938B00658510 /* help.txt in Resources */,
+				1D689B2021D2D6BB00B2631C /* help2.txt in Resources */,
 				1DD989632080720000B209A5 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -171,8 +187,12 @@
 				1D5157EC2174518600658510 /* Shaders.metal in Sources */,
 				1DD9895E208071FF00B209A5 /* ViewController.swift in Sources */,
 				1DDB7FCA20DB56360052FFDE /* Graphics.swift in Sources */,
+				1D689B1521CEA36200B2631C /* Win3DViewController.swift in Sources */,
+				1D689B1821CF4D6400B2631C /* Renderer.swift in Sources */,
+				1D689B1C21CF510B00B2631C /* ArcBall.swift in Sources */,
 				1DDB7FBF20DA18110052FFDE /* MetalTextureView.swift in Sources */,
 				1D5157EE217A3F2700658510 /* SaveLoadViewController.swift in Sources */,
+				1D689B1E21D011AA00B2631C /* View3D.swift in Sources */,
 				1DA4458D21B0FFC3006CA1D1 /* Shaders.m in Sources */,
 				1DDB7FC020DA18110052FFDE /* MetalTextureView.metal in Sources */,
 				1DD9895C208071FF00B209A5 /* AppDelegate.swift in Sources */,
