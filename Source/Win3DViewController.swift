@@ -279,15 +279,31 @@ class Win3DViewController: NSViewController, NSWindowDelegate, WGDelegate {
             commandBuffer.commit()
             commandBuffer.waitUntilCompleted()
         }
-                
-        // 3. update grid point normals
+
+        // 3. smooth heights second time.  vBuffer2 -> vBuffer
+        // -----------------------------------------------------------------------------------------
+        do {
+            let commandBuffer = commandQueue.makeCommandBuffer()!
+            let commandEncoder = commandBuffer.makeComputeCommandEncoder()!
+            commandEncoder.setComputePipelineState(pipeline[PIPELINE_SMOOTH])
+            
+            commandEncoder.setBuffer(vBuffer2, offset: 0, index: 0)
+            commandEncoder.setBuffer(vBuffer,  offset: 0, index: 1)
+            commandEncoder.setBuffer(cBuffer,  offset: 0, index: 2)
+            commandEncoder.dispatchThreadgroups(threadGroups, threadsPerThreadgroup: threadGroupCount)
+            commandEncoder.endEncoding()
+            commandBuffer.commit()
+            commandBuffer.waitUntilCompleted()
+        }
+
+        // 4. update grid point normals
         // -----------------------------------------------------------------------------------------
         do {
             let commandBuffer = commandQueue.makeCommandBuffer()!
             let commandEncoder = commandBuffer.makeComputeCommandEncoder()!
             commandEncoder.setComputePipelineState(pipeline[PIPELINE_NORMAL])
 
-            commandEncoder.setBuffer(vBuffer2, offset: 0, index: 0)
+            commandEncoder.setBuffer(vBuffer, offset: 0, index: 0)
             commandEncoder.dispatchThreadgroups(threadGroups, threadsPerThreadgroup: threadGroupCount)
             commandEncoder.endEncoding()
             commandBuffer.commit()

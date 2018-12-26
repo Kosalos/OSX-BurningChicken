@@ -458,7 +458,7 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
                 let amount:Float = (1.0 - offset3D.z)
                 var xsize = (control.xmax3D - control.xmin3D) * amount
                 var ysize = (control.ymax3D - control.ymin3D) * amount
-                let minSz:Float = 0.005
+                let minSz:Float = 0.001
                 if xsize < minSz { xsize = minSz }
                 if ysize < minSz { ysize = minSz }
                 let xc = (control.xmin3D + control.xmax3D) / 2

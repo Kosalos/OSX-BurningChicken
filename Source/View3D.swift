@@ -57,7 +57,7 @@ class View3D {
     
     func render(_ renderEncoder:MTLRenderCommandEncoder) {
         if vData.count > 0 {
-            renderEncoder.setVertexBuffer(vBuffer2, offset: 0, index: 0)
+            renderEncoder.setVertexBuffer(vBuffer, offset: 0, index: 0)
             renderEncoder.drawIndexedPrimitives(type: .triangle,  indexCount: iDataT.count, indexType: MTLIndexType.uint16, indexBuffer: iBufferT!, indexBufferOffset:0)
         }
     }
