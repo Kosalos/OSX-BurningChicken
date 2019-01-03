@@ -10,7 +10,7 @@
 #include <simd/simd.h>
 
 #define NUM_VARIATION 7
-#define SIZE3D 256
+#define SIZE3D 255
 #define SIZE3Dm (SIZE3D - 1)
 
 typedef struct {
