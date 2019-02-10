@@ -9,7 +9,9 @@
 
 #include <simd/simd.h>
 
-#define NUM_VARIATION 7
+#define NUM_VARIATION 8
+#define LYAPUNOV (NUM_VARIATION-1)
+
 #define SIZE3D 255
 #define SIZE3Dm (SIZE3D - 1)
 
@@ -32,7 +34,7 @@ typedef struct {
     float ymin,ymax,dy;
 
     int coloringFlag;
-    int variation;      // 0 ... 6 = original Mandelbrot, Foam, chicken, variations 1..4
+    int variation;      // 0 ... 6 = original Mandelbrot, Foam, chicken, variations 1..4, Lyapunov
 
     float maxIter;
     float skip;

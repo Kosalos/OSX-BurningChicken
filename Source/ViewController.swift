@@ -17,6 +17,7 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
     var pipeline:[MTLComputePipelineState] = []
     let queue = DispatchQueue(label:"Q")
     var offset3D = float3()
+    var autoChange:Bool = false
     
     lazy var device2D: MTLDevice! = MTLCreateSystemDefaultDevice()
     lazy var defaultLibrary: MTLLibrary! = { self.device2D.makeDefaultLibrary() }()
@@ -89,7 +90,7 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
     //MARK: -
     
     func resizeIfNecessary() {
-        let minWinSize:CGSize = CGSize(width:700, height:800)
+        let minWinSize:CGSize = CGSize(width:700, height:835)
         var r:CGRect = (view.window?.frame)!
         var needSizing:Bool = false
         
@@ -118,13 +119,33 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
     
     //MARK: -
     
+    var isMorph:Bool = true
+    
     var zoomValue:Float = 0
     var panX:Float = 0
     var panY:Float = 0
+    var morphAngle:Float = 0
+    
+    func updateMorphingValues() -> Bool {
+        var wasMorphed:Bool = false
+        
+        if isMorph {
+            let s = sin(morphAngle)
+            morphAngle += 0.001
+            
+            for index in 0 ..< wg.data.count {
+                if wg.alterValueViaMorph(index,s) { wasMorphed = true }
+            }
+        }
+        
+        return wasMorphed
+    }
     
     @objc func timerHandler() {
         var refreshNeeded:Bool = wg.update()
+        if autoChange { refreshNeeded = refreshNeeded || updateMorphingValues() }
         if zoomValue != 0 || panX != 0 || panY != 0 || offset3D.x != 0 || offset3D.y != 0 || offset3D.z != 0 { refreshNeeded = true }
+        
         if refreshNeeded { updateImage() }
         
         if dvrCount > 0 {
@@ -187,11 +208,11 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
         wg.addCommand("X",String(format:"Variation %d",control.variation),.variation)
         
         switch control.variation {
-        case 0,1,3,4,5,6 :
-            wg.addSingleFloat("P",&control.power,0.5,5,0.0002, "Power")
+        case 0,1,3,4,5,6,7 :
+            wg.addSingleFloat("P",&control.power,0.5,5,0.0002, "Power",true)
             if control.variation == 1 {
-                wg.addSingleFloat("Q",&control.foamQ,-1,2,0.001,"foamQ")
-                wg.addSingleFloat("W",&control.foamW,-1,2,0.001,"foamW")
+                wg.addSingleFloat("Q",&control.foamQ,-1,2,0.001,"foamQ",true)
+                wg.addSingleFloat("W",&control.foamW,-1,2,0.001,"foamW",true)
             }
         default : break
         }
@@ -207,12 +228,12 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
         wg.addLine()
         wg.addColor(.coloring,Float(RowHT)*7)
         wg.addCommand("T","Coloring",.coloring)
-        wg.addSingleFloat("2",&control.stripeDensity,-10,10,0.03, "Stripe")
-        wg.addSingleFloat("3",&control.escapeRadius,0.01,15,0.01, "Escape")
-        wg.addSingleFloat("4",&control.multiplier,-2,2,0.01, "Mult")
-        wg.addSingleFloat("5",&control.R,0,1,0.008, "Color R")
-        wg.addSingleFloat("6",&control.G,0,1,0.008, "Color G")
-        wg.addSingleFloat("7",&control.B,0,1,0.008, "Color B")
+        wg.addSingleFloat("2",&control.stripeDensity,-10,10,0.03, "Stripe",true)
+        wg.addSingleFloat("3",&control.escapeRadius,0.01,15,0.01, "Escape",true)
+        wg.addSingleFloat("4",&control.multiplier,-2,2,0.01, "Mult",true)
+        wg.addSingleFloat("5",&control.R,0,1,0.008, "Color R",true)
+        wg.addSingleFloat("6",&control.G,0,1,0.008, "Color G",true)
+        wg.addSingleFloat("7",&control.B,0,1,0.008, "Color B",true)
         
         // ------------------------------------
         func pointTrapGroup(_ index:Int, _ cmd:WgIdent) {
@@ -240,6 +261,8 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
         // ------------------------------------
         
         wg.addLine()
+        wg.addColor(.autoChange,Float(RowHT))
+        wg.addCommand("A","AutoChange",.autoChange)
         wg.addCommand("V","Save/Load",.saveLoad)
         wg.addCommand("L","Load Next",.loadNext)
         wg.addCommand("H","Help",.help)
@@ -331,6 +354,10 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
         case .lt2 :
             toggleLineTrap(2)
             updateImage()
+            
+        case .autoChange :
+            autoChange = !autoChange
+            initializeWidgetGroup()
         default : break
         }
         
@@ -357,6 +384,7 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
         case .win3D    : highlight = control.win3DFlag > 0
         case .shadow   : highlight = shadowFlag
         case .coloring : highlight = control.coloringFlag > 0
+        case .autoChange : highlight = autoChange
         case .pt0 : highlight = getPTrapActive(0) > 0
         case .pt1 : highlight = getPTrapActive(1) > 0
         case .pt2 : highlight = getPTrapActive(2) > 0

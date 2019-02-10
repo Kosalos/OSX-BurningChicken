@@ -13,7 +13,7 @@ protocol WGDelegate {
 }
 
 enum WgEntryKind { case singleFloat,dualFloat,dropDown,option,command,toggle,legend,line,string,color,gap,float3Dual,float3Single,float3xy,float3z, move,zoom }
-enum WgIdent { case none,saveLoad,loadNext,reset,help,coloring,shadow,pt0,pt1,pt2,lt0,lt1,lt2,foam,variation,win3D,stereo }
+enum WgIdent { case none,saveLoad,loadNext,reset,help,coloring,shadow,pt0,pt1,pt2,lt0,lt1,lt2,foam,variation,win3D,stereo,autoChange }
 
 let wgBackgroundColor = NSColor(red:0.1, green:0.02, blue:0.02, alpha: 1)
 let wgHighlightColor = NSColor(red:0.4, green:0.2, blue:0, alpha:1)
@@ -196,9 +196,10 @@ class WidgetGroup: NSView {
         data[ddIndex].str.append(iname)
     }
     
-    func addSingleFloat(_ hotKey:String, _ vx:UnsafeMutableRawPointer, _ min:Float, _ max:Float,  _ delta:Float, _ iname:String) {
+    func addSingleFloat(_ hotKey:String, _ vx:UnsafeMutableRawPointer, _ min:Float, _ max:Float,  _ delta:Float, _ iname:String, _ nMorph:Bool = false) {
         newEntry(hotKey,.singleFloat)
         data[dIndex].valuePointerX = vx
+        data[dIndex].morph = nMorph
         addCommon(dIndex,min,max,delta,iname)
     }
     

@@ -1,6 +1,7 @@
 // Point and Line orbit traps: http://www.iquilezles.org/www/articles/ftrapsgeometric/ftrapsgeometric.htm
 // foam style: https://fractalforums.org/programming/11/mandelbrot-foam/2360
 // variations: https://fractalforums.org/share-a-fractal/22/a-few-mandelbrot-variations-i-discovered-stay-tuned-for-more/216
+// Lyapunov : https://www.shadertoy.com/view/Mds3R8
 
 #include <metal_stdlib>
 #import "Shader.h"
@@ -38,7 +39,6 @@ kernel void fractalShader
  constant float3 *color     [[ buffer(2) ]],    // color lookup table[256]
  uint2 p [[thread_position_in_grid]])
 {
-    
     float2 c;
     
     if(control.is3DWindow == 0) {        // 2D fractal in Main window
@@ -81,6 +81,7 @@ kernel void fractalShader
     float zr,z2 = 0;
     float minDist = 999;
     float2 q,w;
+    float x,h = 0.5;
     
     if(control.variation == 1 || control.variation > 2) {
         z = float2(1/control.power,0);
@@ -140,8 +141,30 @@ kernel void fractalShader
                 z.x = -(z.x*z.x - 3*z.y*z.y)*(z.x) + c.x;
                 z.y = -abs(3*zr*zr - z.y*z.y)*(z.y) + c.y;
                 break;
+                
+            case LYAPUNOV :
+                float base = control.power * 3;
+                x = c.x*x*(base-x); h += log2(abs(c.x*(base-2.0*x)));
+                x = c.x*x*(base-x); h += log2(abs(c.x*(base-2.0*x)));
+                x = c.x*x*(base-x); h += log2(abs(c.x*(base-2.0*x)));
+                x = c.x*x*(base-x); h += log2(abs(c.x*(base-2.0*x)));
+                x = c.x*x*(base-x); h += log2(abs(c.x*(base-2.0*x)));
+                x = c.x*x*(base-x); h += log2(abs(c.x*(base-2.0*x)));
+                
+                float stretch = 6;
+                x = stretch * c.y*x*(base-x); h += log2(abs(c.y*(base-2.0*x)));
+                x = stretch * c.y*x*(base-x); h += log2(abs(c.y*(base-2.0*x)));
+                x = stretch * c.y*x*(base-x); h += log2(abs(c.y*(base-2.0*x)));
+                x = stretch * c.y*x*(base-x); h += log2(abs(c.y*(base-2.0*x)));
+                x = stretch * c.y*x*(base-x); h += log2(abs(c.y*(base-2.0*x)));
+                x = stretch * c.y*x*(base-x); h += log2(abs(c.y*(base-2.0*x)));
+                
+                h = sqrt(abs(h));
+                z.y = sin(control.escapeRadius * h * 0.1);
+                z.x = 0.5 + 5 * sin(2.5 * h);
+                break;
         }
-        
+
         if(control.coloringFlag && (iter >= skip)) {
             count += 1;
             lastAdded = 0.5 + 0.5 * sin(control.stripeDensity * atan2(z.y, z.x));

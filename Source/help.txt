@@ -87,6 +87,8 @@ Line Traps
 Note: These orbit traps work great when using the traditional coloring method.
 Just move the "Point" around until you see it's effect.
 
+A. Toggle whether parameters auto change.
+
 V. Save/Load
    Launch the Save/Load dialog.
 
