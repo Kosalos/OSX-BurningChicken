@@ -166,6 +166,7 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
         panX = 0
         panY = 0
         
+        control.retry = 0
         control.power = 2
         control.xmin = -2
         control.xmax = 1
@@ -203,7 +204,8 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
         wg.addSingleFloat("I",&control.maxIter,40,200,3,"maxIter")
         wg.addSingleFloat("C",&control.contrast,0.1,5,0.03, "Contrast")
         wg.addSingleFloat("S",&control.skip,1,100,0.2,"Skip")
-        
+        wg.addCommand("K",String(format:"Retry %d",control.retry),.retry)
+
         wg.addLine()
         wg.addCommand("X",String(format:"Variation %d",control.variation),.variation)
         
@@ -321,11 +323,18 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
                 win3DClosed()
             }
             
+            control.retry = 0
             control.variation += 1
             if control.variation >= NUM_VARIATION { control.variation = 0 }
             initializeWidgetGroup()
             wgCommand(.reset)
             
+        case .retry :
+            control.retry += 1
+            if control.retry > 5 { control.retry = 0 }
+            initializeWidgetGroup()
+            updateImage()
+
         case .shadow :
             shadowFlag = !shadowFlag
             metalTextureViewL.initialize(shadowFlag ? texture2 : texture1)

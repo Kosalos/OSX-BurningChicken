@@ -2,6 +2,7 @@
 // foam style: https://fractalforums.org/programming/11/mandelbrot-foam/2360
 // variations: https://fractalforums.org/share-a-fractal/22/a-few-mandelbrot-variations-i-discovered-stay-tuned-for-more/216
 // Lyapunov : https://www.shadertoy.com/view/Mds3R8
+// 'retry' idea: http://www.fractalforums.com/index.php?action=gallery;sa=view;id=20565
 
 #include <metal_stdlib>
 #import "Shader.h"
@@ -72,7 +73,7 @@ kernel void fractalShader
     }
     
     int iter;
-    int maxIter = int(control.maxIter);
+    int maxIter = int(control.maxIter) * (control.retry + 1);
     int skip = int(control.skip);
     float avg = 0;
     float lastAdded = 0;
@@ -82,6 +83,7 @@ kernel void fractalShader
     float minDist = 999;
     float2 q,w;
     float x,h = 0.5;
+    int retry = 0;
     
     if(control.variation == 1 || control.variation > 2) {
         z = float2(1/control.power,0);
@@ -190,7 +192,13 @@ kernel void fractalShader
         // -----------------------------------------------------------------
         
         z2 = dot(z,z);
-        if (z2 > control.escapeRadius && iter > skip) break;
+        if (z2 > control.escapeRadius && iter > skip) {
+            if(retry < control.retry) {
+                ++retry;
+                z2 *= 0.01;
+            }
+            else break;
+        }
     }
     
     float3 icolor = float3();

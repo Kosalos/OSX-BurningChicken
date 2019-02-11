@@ -40,6 +40,8 @@ C. Contrast
 S. Skip
    Number of cycles before each pixel counts as 'visible'
 
+K. #times the escape value is decimated so that iterations can continue.
+
 X. Variation
    Cycle through a series of Mandelbrot variations.
    Additional control parameter(s) accompany some of the variations.

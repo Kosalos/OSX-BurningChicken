@@ -35,6 +35,7 @@ typedef struct {
 
     int coloringFlag;
     int variation;      // 0 ... 6 = original Mandelbrot, Foam, chicken, variations 1..4, Lyapunov
+    int retry;          // #times the escape value is reduced so iterations can continue
 
     float maxIter;
     float skip;
