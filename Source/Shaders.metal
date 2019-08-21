@@ -85,6 +85,13 @@ kernel void fractalShader
     float x,h = 0.5;
     int retry = 0;
     
+    float br = c.x;
+    float bi = c.y;
+    float ar=0;
+    float ai = control.power / 10; // 0.58;
+    float aar=ar*ar;
+    float aai=ai*ai;
+    
     if(control.variation == 1 || control.variation > 2) {
         z = float2(1/control.power,0);
         q = float2(control.foamQ, 0);
@@ -108,14 +115,21 @@ kernel void fractalShader
                 break;
                 
             case 3 :    // variation #3
-                zr = z.x;
-                if (z.x > 0) {
-                    z.x = z.x*z.x - z.y*z.y + c.x;
-                    z.y = 2*zr*abs(z.y) + c.y;
-                } else {
-                    z.x = z.x*z.x - z.y*z.y + c.x;
-                    z.y = 2*abs(zr)*z.y + c.y;
-                }
+                ai=2.0*ar*ai+bi;
+                ar=aar-aai+br;
+                aar=ar*ar;
+                aai=ai*ai;
+                
+                z.x = ar;
+                z.y = ai;
+                //                zr = z.x;
+                //                if (z.x > 0) {
+                //                    z.x = z.x*z.x - z.y*z.y + c.x;
+                //                    z.y = 2*zr*abs(z.y) + c.y;
+                //                } else {
+                //                    z.x = z.x*z.x - z.y*z.y + c.x;
+                //                    z.y = 2*abs(zr)*z.y + c.y;
+                //                }
                 break;
                 
             case 4 : // variation #8
@@ -166,7 +180,7 @@ kernel void fractalShader
                 z.x = 0.5 + 5 * sin(2.5 * h);
                 break;
         }
-
+        
         if(control.coloringFlag && (iter >= skip)) {
             count += 1;
             lastAdded = 0.5 + 0.5 * sin(control.stripeDensity * atan2(z.y, z.x));
@@ -191,13 +205,21 @@ kernel void fractalShader
         }
         // -----------------------------------------------------------------
         
-        z2 = dot(z,z);
-        if (z2 > control.escapeRadius && iter > skip) {
-            if(retry < control.retry) {
-                ++retry;
-                z2 *= 0.01;
+        if(control.variation == 3) {
+            if(aar+aai > 5) {
+                z2 = dot(z,z);
+                break;
             }
-            else break;
+        }
+        else {
+            z2 = dot(z,z);
+            if (z2 > control.escapeRadius && iter > skip) {
+                if(retry < control.retry) {
+                    ++retry;
+                    z2 *= 0.01;
+                }
+                else break;
+            }
         }
     }
     
@@ -338,7 +360,7 @@ kernel void normalShader
  uint2 p [[thread_position_in_grid]])
 {
     if(p.x >= SIZE3D || p.y >= SIZE3D) return; // data size not evenly divisible by threadGroups
-
+    
     int i = int(p.y) * SIZE3D + int(p.x);
     int i2 = i + ((p.x < SIZE3Dm) ? 1 : -1);
     int i3 = i + ((p.y < SIZE3Dm) ? SIZE3D : -SIZE3D);
@@ -364,34 +386,34 @@ kernel void smoothingShader
     if(pp.x >= SIZE3D || pp.y >= SIZE3D) return; // data size not evenly divisible by threadGroups
     
     int index = pp.y * SIZE3D + pp.x;
-
+    
     // determine average height of eight neighbors
     int count = 0;
     float totalHeight = 0;
-
+    
     for(int x = -1; x <= 1; ++x) {
         if(pp.x + x < 0) continue;
         if(pp.x + x > SIZE3Dm) continue;
-
+        
         for(int y = -1; y <= 1; ++y) {
             if(pp.y + y < 0) continue;
             if(pp.y + y > SIZE3Dm) continue;
-
+            
             int index2 = index + y * SIZE3D + x;
             totalHeight += src[index2].height;
             
             ++count;
         }
     }
-
+    
     float averageHt = totalHeight / float(count);
-
+    
     // smoothed height
     float ht = src[index].height * control.smooth  + averageHt * (1 - control.smooth);
-
+    
     TVertex v = src[index];
     v.position.y = (ht) * control.height / 3.0;
-
+    
     dst[index] = v;
 }
 
