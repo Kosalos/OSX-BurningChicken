@@ -39,7 +39,7 @@ struct wgEntryData {
     var valuePointerX:UnsafeMutableRawPointer! = nil
     var valuePointerY:UnsafeMutableRawPointer! = nil
     var deltaValue:Float = 0
-    var mRange = float2()
+    var mRange = SIMD2<Float>()
     var visible:Bool = true
     var yCoord = CGFloat()
     
@@ -78,7 +78,7 @@ struct wgEntryData {
     func float3ValueRatio(_ who:Int) -> CGFloat {
         func getFloat3Value(_ who:Int) -> Float {
             if valuePointerX == nil { return 0 }
-            let v:float3 = valuePointerX.load(as: float3.self)
+            let v:SIMD3<Float> = valuePointerX.load(as: SIMD3<Float>.self)
             switch who {
             case 0 : return v.x
             case 1 : return v.y
@@ -99,7 +99,7 @@ class WidgetGroup: NSView {
     var data:[wgEntryData] = []
     var focus:Int = NONE
     var previousFocus:Int = NONE
-    var delta = float3()
+    var delta = SIMD3<Float>()
     let color = NSColor.lightGray
     var parent:NSViewController! = nil
 
@@ -150,7 +150,7 @@ class WidgetGroup: NSView {
     }
     
     func alterValueViaMorph(_ index:Int, _ ratio:Float) -> Bool {
-        func morphFloat3Value() -> float3 { return data[index].valuePointerX.load(as: float3.self) }
+        func morphFloat3Value() -> SIMD3<Float> { return data[index].valuePointerX.load(as: SIMD3<Float>.self) }
         
         if !data[index].morph { return false }
         
@@ -165,12 +165,12 @@ class WidgetGroup: NSView {
                 let valueY = fClamp2(data[index].getFloatValue(1) + amt, data[index].mRange)
                 data[index].valuePointerY.storeBytes(of:valueY, as:Float.self)
             }
-        case .float3Dual, .float3xy, .float3z :  // alter all fields of float3
-            var v:float3 = morphFloat3Value()
+        case .float3Dual, .float3xy, .float3z :  // alter all fields of SIMD3<Float>
+            var v:SIMD3<Float> = morphFloat3Value()
             v.x = fClamp2(v.x + amt, data[index].mRange)
             v.y = fClamp2(v.y + amt, data[index].mRange)
             v.z = fClamp2(v.z + amt, data[index].mRange)
-            data[index].valuePointerX.storeBytes(of:v, as:float3.self)
+            data[index].valuePointerX.storeBytes(of:v, as:SIMD3<Float>.self)
         default : break
         }
 
@@ -213,14 +213,6 @@ class WidgetGroup: NSView {
     //MARK:-
     
     func addFloat3Dual(_ hotKey:String, _ vx:UnsafeMutableRawPointer, _ min:Float, _ max:Float,  _ delta:Float, _ iname:String) {
-        newEntry(hotKey,.float3Dual)
-        data[dIndex].valuePointerX = vx
-        addCommon(dIndex,min,max,delta,iname)
-    }
-    
-    func addFloat3Single(_ hotKey:String, _ vx:UnsafeMutableRawPointer, _ min:Float, _ max:Float,  _ delta:Float, _ iname:String) {
-        newEntry(hotKey,.float3Single)
-        data[dIndex].valuePointerX = vx
         addCommon(dIndex,min,max,delta,iname)
     }
     
@@ -407,23 +399,23 @@ class WidgetGroup: NSView {
     
     //MARK:-
     
-    func float3Value() -> float3 {
-        if focus == NONE { return float3() }
-        return data[focus].valuePointerX.load(as: float3.self)
+    func float3Value() -> SIMD3<Float> {
+        if focus == NONE { return SIMD3<Float>() }
+        return data[focus].valuePointerX.load(as: SIMD3<Float>.self)
     }
     
     func update() -> Bool {
         if focus == NONE { return false }
-        if delta == float3() { return false } // marks end of session
+        if delta == SIMD3<Float>() { return false } // marks end of session
         
         switch data[focus].kind {
         case .float3Dual :
-            var v:float3 = float3Value()
+            var v:SIMD3<Float> = float3Value()
             v.x = fClamp2(v.x + delta.x * data[focus].deltaValue, data[focus].mRange)
             v.y = fClamp2(v.y + delta.y * data[focus].deltaValue, data[focus].mRange)
-            data[focus].valuePointerX.storeBytes(of:v, as:float3.self)
+            data[focus].valuePointerX.storeBytes(of:v, as:SIMD3<Float>.self)
         case .float3xy, .float3z :
-            var v:float3 = float3Value()
+            var v:SIMD3<Float> = float3Value()
             
             if delegate!.isShiftKeyDown() { // Z = X, X = 0
                 v.y = fClamp2(v.y + delta.y * data[focus].deltaValue, data[focus].mRange)
@@ -433,7 +425,7 @@ class WidgetGroup: NSView {
             v.x = fClamp2(v.x + delta.x * data[focus].deltaValue, data[focus].mRange)
             v.y = fClamp2(v.y + delta.y * data[focus].deltaValue, data[focus].mRange)
             }
-            data[focus].valuePointerX.storeBytes(of:v, as:float3.self)
+            data[focus].valuePointerX.storeBytes(of:v, as:SIMD3<Float>.self)
         default :
             if data[focus].isValueWidget() {
                 let valueX = fClamp2(data[focus].getFloatValue(0) + delta.x * data[focus].deltaValue, data[focus].mRange)
@@ -471,7 +463,7 @@ class WidgetGroup: NSView {
     
     //MARK:-
     
-    func stopChanges() { delta = float3() }
+    func stopChanges() { delta = SIMD3<Float>() }
     
     func focusMovement(_ pt:CGPoint, _ touchCount:Int) {
         if focus == NONE { return }
@@ -557,7 +549,7 @@ class WidgetGroup: NSView {
         stopChanges()
     }
     
-    func fClamp2(_ v:Float, _ range:float2) -> Float {
+    func fClamp2(_ v:Float, _ range:SIMD2<Float>) -> Float {
         if v < range.x { return range.x }
         if v > range.y { return range.y }
         return v

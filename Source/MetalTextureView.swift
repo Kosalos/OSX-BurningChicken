@@ -29,11 +29,11 @@ class MetalTextureView: MTKView,MTKViewDelegate {
             fatalError(String(describing: error))
         }
         
-        let p1 = float2(0,0)
-        let p2 = float2(1,0)
-        let p3 = float2(0,1)
-        let p4 = float2(1,1)
-        vertices = device.makeBuffer(bytes: [p1,p2,p3,p4], length: 4 * MemoryLayout<float2>.stride,  options: [])
+        let p1 = SIMD2<Float>(0,0)
+        let p2 = SIMD2<Float>(1,0)
+        let p3 = SIMD2<Float>(0,1)
+        let p4 = SIMD2<Float>(1,1)
+        vertices = device.makeBuffer(bytes: [p1,p2,p3,p4], length: 4 * MemoryLayout<SIMD2<Float>>.stride,  options: [])
 
         let descriptor: MTLSamplerDescriptor = MTLSamplerDescriptor()
         descriptor.magFilter = .nearest

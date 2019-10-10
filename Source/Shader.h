@@ -61,6 +61,7 @@ typedef struct {
     float ymin3D,ymax3D,dy3D;
     float height;
     float smooth;
+    float cx,cy;
 } Control;
 
 typedef struct {

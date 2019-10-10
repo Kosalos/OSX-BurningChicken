@@ -4,7 +4,7 @@ import MetalKit
 var vc3D:Win3DViewController! = nil
 let view3D = View3D()
 var device3D:MTLDevice! = nil
-var camera:float3 = float3(0,0.2,-200)
+var camera:SIMD3<Float> = SIMD3<Float>(0,0.2,-200)
 
 class Win3DViewController: NSViewController, NSWindowDelegate, WGDelegate {
     var isStereo:Bool = false
@@ -73,7 +73,7 @@ class Win3DViewController: NSViewController, NSWindowDelegate, WGDelegate {
         initializeWidgetGroup()
         layoutViews()
 
-        light.base = float3(20,1,0)
+        light.base = SIMD3<Float>(20,1,0)
         light.radius = 50
         light.deltaAngle = 0.002
         light.power = 1.3
@@ -150,7 +150,7 @@ class Win3DViewController: NSViewController, NSWindowDelegate, WGDelegate {
     //MARK: -
     
     func reset() {
-        camera = float3(3.125000e-02, 3.514453e+01, -1.700000e+02)
+        camera = SIMD3<Float>(3.125000e-02, 3.514453e+01, -1.700000e+02)
         arcBall.endPosition = simd_float3x3([-0.98003304, -0.114680395, 0.08034625], [-0.068442315, 0.8726114, 0.46063754], [-0.1268652, 0.44375, -0.8655098])
         arcBall.transformMatrix = simd_float4x4([-0.98003304, -0.114680395, 0.08034625, 0.0], [-0.068442315, 0.8726114, 0.46063754, 0.0], [-0.1268652, 0.44375, -0.8655098, 0.0], [0.0, 0.0, 0.0, 1.0])
     }
@@ -429,9 +429,9 @@ class Win3DViewController: NSViewController, NSWindowDelegate, WGDelegate {
     
     func updateRotationSpeedAndDirection(_ pt:NSPoint) {
         let scale:Float = 0.01
-        let rRange = float2(-3,3)
+        let rRange = SIMD2<Float>(-3,3)
         
-        func fClamp(_ v:Float, _ range:float2) -> Float {
+        func fClamp(_ v:Float, _ range:SIMD2<Float>) -> Float {
             if v < range.x { return range.x }
             if v > range.y { return range.y }
             return v

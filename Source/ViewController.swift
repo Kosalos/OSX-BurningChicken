@@ -16,7 +16,7 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
     var texture2: MTLTexture!
     var pipeline:[MTLComputePipelineState] = []
     let queue = DispatchQueue(label:"Q")
-    var offset3D = float3()
+    var offset3D = SIMD3<Float>()
     var autoChange:Bool = false
     
     lazy var device2D: MTLDevice! = MTLCreateSystemDefaultDevice()
@@ -39,7 +39,7 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
         
         let defaultLibrary:MTLLibrary! = device2D.makeDefaultLibrary()
         
-        let jbSize = MemoryLayout<float3>.stride * 256
+        let jbSize = MemoryLayout<SIMD3<Float>>.stride * 256
         colorBuffer = device2D.makeBuffer(length:jbSize, options:MTLResourceOptions.storageModeShared)
         colorBuffer.contents().copyMemory(from:colorMap, byteCount:jbSize)
         
@@ -161,7 +161,7 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
     func reset() {
         if let w = win3D { w.close() }
 
-        offset3D = float3()
+        offset3D = SIMD3<Float>()
         zoomValue = 0
         panX = 0
         panY = 0
@@ -485,7 +485,7 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
         }
         
         // 3D pan, zoom --------------
-        if offset3D != float3() {
+        if offset3D != SIMD3<Float>() {
             let dx:Float = offset3D.x * control.dx * 5
             let dy:Float = -offset3D.y * control.dy * 5
             control.xmin3D += dx; control.xmax3D += dx
@@ -505,7 +505,7 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
                 control.ymin3D = yc - ysize/2
                 control.ymax3D = yc + ysize/2
             }
-            offset3D = float3()
+            offset3D = SIMD3<Float>()
         }
         
         control.dx = (control.xmax - control.xmin) / Float(control.xSize)
@@ -517,6 +517,9 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
     //MARK: -
     
     func calcFractal() {
+        
+//        print("pow: ", control.power.debugDescription, "  it: ", control.maxIter.debugDescription)
+        
         updateRegionsOfInterest()
         
         control.is3DWindow = 0
@@ -680,7 +683,7 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
         var pt = pt
         if !wg.isHidden { pt.x -= WGWidth }
         
-        let c:float2 = float2(Float(control.xmin + control.dx * Float(pt.x)), Float(control.ymin + control.dy * Float(pt.y)))
+        let c:SIMD2<Float> = SIMD2<Float>(Float(control.xmin + control.dx * Float(pt.x)), Float(control.ymin + control.dy * Float(pt.y)))
         
         switch(state) {
         case .initial :
@@ -720,3 +723,39 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
 class BaseNSView: NSView {
     override var acceptsFirstResponder: Bool { return true }
 }
+
+import Foundation
+
+// wrapper function for shell commands
+// must provide full path to executable
+func shell(_ launchPath: String, _ arguments: [String] = []) -> (String?, Int32) {
+    let task = Process()
+    task.executableURL = URL(fileURLWithPath: launchPath)
+    task.arguments = arguments
+    
+    let pipe = Pipe()
+    task.standardOutput = pipe
+    task.standardError = pipe
+    
+    do {
+        try task.run()
+    } catch {
+        // handle errors
+        print("Error: \(error.localizedDescription)")
+    }
+    
+    let data = pipe.fileHandleForReading.readDataToEndOfFile()
+    let output = String(data: data, encoding: .utf8)
+    
+    task.waitUntilExit()
+    return (output, task.terminationStatus)
+}
+
+func cTest() {
+// valid directory listing test
+let (goodOutput, goodStatus) = shell("/bin/ls", ["-la"])
+if let out = goodOutput { print("\(out)") }
+print("Returned \(goodStatus)\n")
+}
+
+

@@ -35,7 +35,7 @@ class Graphics {
         stringFont = NSFont.init(name: "Helvetica", size:CGFloat(stringFontSize))!
         
         stringAtts = [
-            NSAttributedString.Key.font:stringFont,
+            NSAttributedString.Key.font:stringFont as Any,
             NSAttributedString.Key.foregroundColor: stringColor]
     }
     
