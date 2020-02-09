@@ -74,6 +74,7 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
         control.win3DFlag = 0
         control.coloringFlag = 1
         control.variation = 0
+        control.radialAngle = 0
     }
     
     func windowWillClose(_ aNotification: Notification) {
@@ -181,7 +182,8 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
         control.B = 0.7
         control.maxIter = 200
         control.contrast = 4
-        
+        control.radialAngle = 0
+
         control.foamQ = -0.5
         control.foamW = 0.2
         
@@ -199,6 +201,7 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
         wg.addCommand("R","Reset",.reset)
         wg.addSingleFloat("Z",&zoomValue,-1,1,0.01, "Zoom")
         wg.addDualFloat("M",&panX,&panY,-10,10,1, "Move")
+        wg.addSingleFloat("Y",&control.radialAngle,0,Float.pi,0.03, "Radial Sym")
         
         wg.addLine()
         wg.addSingleFloat("I",&control.maxIter,40,200,3,"maxIter")
@@ -211,7 +214,7 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
         
         switch control.variation {
         case 0,1,3,4,5,6,7 :
-            wg.addSingleFloat("P",&control.power,0.5,25,0.0002, "Power",true)
+            wg.addSingleFloat("P",&control.power,0.5,25,0.002, "Power",true)
             if control.variation == 1 {
                 wg.addSingleFloat("Q",&control.foamQ,-1,2,0.001,"foamQ",true)
                 wg.addSingleFloat("W",&control.foamW,-1,2,0.001,"foamW",true)
@@ -231,7 +234,7 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
         wg.addColor(.coloring,Float(RowHT)*7)
         wg.addCommand("T","Coloring",.coloring)
         wg.addSingleFloat("2",&control.stripeDensity,-10,10,0.03, "Stripe",true)
-        wg.addSingleFloat("3",&control.escapeRadius,0.01,15,0.01, "Escape",true)
+        wg.addSingleFloat("3",&control.escapeRadius,0.01,15,0.1, "Escape",true)
         wg.addSingleFloat("4",&control.multiplier,-2,2,0.01, "Mult",true)
         wg.addSingleFloat("5",&control.R,0,1,0.008, "Color R",true)
         wg.addSingleFloat("6",&control.G,0,1,0.008, "Color G",true)
@@ -584,7 +587,7 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
     var letterAKeyDown:Bool = false
     
     override func keyDown(with event: NSEvent) {
-        super.keyDown(with: event)
+        //super.keyDown(with: event)
         
         updateModifierKeyFlags(event)
         
@@ -628,7 +631,7 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
     }
     
     override func keyUp(with event: NSEvent) {
-        super.keyUp(with: event)
+        //super.keyUp(with: event)
         
         wg.stopChanges()
         

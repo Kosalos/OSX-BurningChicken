@@ -38,13 +38,33 @@ kernel void fractalShader
  device TVertex* vData      [[ buffer(0) ]],
  constant Control &control  [[ buffer(1) ]],
  constant float3 *color     [[ buffer(2) ]],    // color lookup table[256]
- uint2 p [[thread_position_in_grid]])
+ uint2 srcP [[thread_position_in_grid]])
 {
+    uint2 p = srcP; // copy of pixel coordinate, altered during radial symmetry
     float2 c;
     
+    // apply radial symmetry? ---------
+    if(control.radialAngle > 0.01) { // 0 = don't apply
+        float centerX = control.xSize/2;
+        float centerY = control.ySize/2;
+        float dx = float(srcP.x - centerX);
+        float dy = float(srcP.y - centerY);
+
+        float angle = fabs(atan2(dy,dx));
+
+        float dRatio = 0.01 + control.radialAngle;
+        while(angle > dRatio) angle -= dRatio;
+        if(angle > dRatio/2) angle = dRatio - angle;
+
+        float dist = sqrt(dx * dx + dy * dy);
+
+        p.x = uint(centerX + cos(angle) * dist);
+        p.y = uint(centerY + sin(angle) * dist);
+    }
+    
     if(control.is3DWindow == 0) {        // 2D fractal in Main window
-        if(p.x >= uint(control.xSize)) return; // screen size not evenly divisible by threadGroups
-        if(p.y >= uint(control.ySize)) return;
+        if(srcP.x >= uint(control.xSize)) return; // screen size not evenly divisible by threadGroups
+        if(srcP.y >= uint(control.ySize)) return;
         c = float2(control.xmin + control.dx * float(p.x), control.ymin + control.dy * float(p.y));
         
         if(control.win3DFlag > 0) {  // draw 3D bounding box
@@ -67,8 +87,8 @@ kernel void fractalShader
         }
     }
     else {  // 3D rendition in second window
-        if(p.x >= uint(SIZE3D)) return; // screen size not evenly divisible by threadGroups
-        if(p.y >= uint(SIZE3D)) return;
+        if(srcP.x >= uint(SIZE3D)) return; // screen size not evenly divisible by threadGroups
+        if(srcP.y >= uint(SIZE3D)) return;
         c = float2(control.xmin3D + control.dx3D * float(p.x), control.ymin3D + control.dy3D * float(p.y));
     }
     
@@ -256,7 +276,7 @@ kernel void fractalShader
     icolor.z = 0.5 + (icolor.z - 0.5) * control.contrast;
     
     if(control.is3DWindow == 0) {        // 2D fractal in Main window
-        outTexture.write(float4(icolor,1),p);
+        outTexture.write(float4(icolor,1),srcP);
     }
     else { // 3D rendition in second window
         if(icolor.x < 0.1 && icolor.y < 0.1 && icolor.z < 0.1) icolor = float3(0.3);

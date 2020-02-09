@@ -324,7 +324,7 @@ class Win3DViewController: NSViewController, NSWindowDelegate, WGDelegate {
     var letterAKeyDown:Bool = false
     
     override func keyDown(with event: NSEvent) {
-        super.keyDown(with: event)
+       // super.keyDown(with: event)
         
         updateModifierKeyFlags(event)
         
@@ -368,7 +368,7 @@ class Win3DViewController: NSViewController, NSWindowDelegate, WGDelegate {
     }
     
     override func keyUp(with event: NSEvent) {
-        super.keyUp(with: event)
+        //super.keyUp(with: event)
         
         wg.stopChanges()
         

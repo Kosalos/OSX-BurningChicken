@@ -62,6 +62,7 @@ typedef struct {
     float height;
     float smooth;
     float cx,cy;
+    float radialAngle;
 } Control;
 
 typedef struct {

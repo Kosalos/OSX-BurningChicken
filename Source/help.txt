@@ -31,6 +31,11 @@ Z. Zoom
 M. Move
    Select the region of interest.
 
+Y. Radial Symmetry
+   When value is zero (set to lowest value), the image renders as normal.
+   When active (non-zero, specifying pie wedge size in radians),
+   a pie slice shaped region of the image is repeated to form a mandala.
+
 I. maxIter
    Specify the number of interations the shader uses.
 
