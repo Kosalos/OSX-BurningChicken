@@ -83,7 +83,7 @@ class Renderer: NSObject, MTKViewDelegate {
         mtlVertexDescriptor.attributes[0].offset = 0
         mtlVertexDescriptor.attributes[0].bufferIndex = 0
         
-        mtlVertexDescriptor.attributes[1].format = MTLVertexFormat.float3   // txt
+        mtlVertexDescriptor.attributes[1].format = MTLVertexFormat.float2   // txt
         mtlVertexDescriptor.attributes[1].offset = 0
         mtlVertexDescriptor.attributes[1].bufferIndex = 1
         
