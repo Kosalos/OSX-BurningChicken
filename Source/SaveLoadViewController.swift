@@ -2,7 +2,7 @@ import Cocoa
 
 let populatedCellBackgroundColor = NSColor(red:0.1,  green:0.5,  blue:0.1, alpha: 1)
 
-protocol SLCellDelegate: class {
+protocol SLCellDelegate: AnyObject {
     func didTapButton(_ sender: NSButton)
 }
 

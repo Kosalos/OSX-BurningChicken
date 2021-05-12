@@ -364,6 +364,12 @@ class Win3DViewController: NSViewController, NSWindowDelegate, WGDelegate {
         let keyCode = event.charactersIgnoringModifiers!.uppercased()
         //print("KeyDown ",keyCode,event.keyCode)
         
+        switch(keyCode) {
+        case "[" : tiltAngle -= 0.01
+        case "]" : tiltAngle += 0.01
+        default  : break
+        }
+        
         wg.hotKey(keyCode)
     }
     

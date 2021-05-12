@@ -54,3 +54,5 @@ O. Stereo
 
 R. Reset
    Reset the image position.
+
+[, ] :  Tilt the image

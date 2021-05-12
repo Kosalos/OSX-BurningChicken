@@ -6,6 +6,7 @@ let alignedUniformsSize = (MemoryLayout<Uniforms>.size & ~0xFF) + 0x100
 let maxBuffersInFlight = 3
 
 var light = LightData()
+var tiltAngle:Float = 0
 
 enum RendererError: Error { case badVertexDescriptor }
 
@@ -153,12 +154,14 @@ class Renderer: NSObject, MTKViewDelegate {
                 projectionMatrix
                 * translate(camera.x,camera.y,camera.z)
                 * rotate(stereoAngle,SIMD3<Float>(0,1,0))
+                * rotate(tiltAngle,SIMD3<Float>(1,0,0))
                 * arcBall.transformMatrix
         }
         else {
             uniforms[0].mvp =
                 projectionMatrix
                 * translate(camera.x,camera.y,camera.z)
+                * rotate(tiltAngle,SIMD3<Float>(1,0,0))
                 * arcBall.transformMatrix
         }
 

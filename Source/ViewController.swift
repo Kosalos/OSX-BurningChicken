@@ -196,7 +196,6 @@ class ViewController: NSViewController, NSWindowDelegate, WGDelegate {
     //MARK: -
     
     func initializeWidgetGroup() {
-        let coloringHeight:Float = Float(RowHT - 2)
         wg.reset()
         wg.addCommand("R","Reset",.reset)
         wg.addSingleFloat("Z",&zoomValue,-1,1,0.01, "Zoom")
